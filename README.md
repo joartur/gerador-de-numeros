@@ -1,36 +1,74 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+````markdown name=TUTORIAL.md
+# Gerador de Números Aleatórios – Next.js
 
-## Getting Started
+Este projeto é um gerador de números aleatórios, desenvolvido em Next.js com React, que permite ao usuário sortear números dentro de um intervalo definido, exibindo o histórico dos números já sorteados de forma visual e intuitiva.
 
-First, run the development server:
+## Funcionalidades
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Intervalo Personalizado:** O usuário define o número mínimo ("De") e o número máximo ("Até") para o sorteio.
+- **Sorteio Único:** Cada número só pode ser sorteado uma vez. Não há repetições.
+- **Exibição Destacada:** O último número sorteado é exibido em destaque com o rótulo "Último número sorteado".
+- **Histórico Visual:** Os números anteriores são mostrados em uma grade de até 4 por linha.
+- **Controle de Sorteio:** Quando todos os números do intervalo forem sorteados, o botão é desabilitado e a mensagem "Todos os números já foram sorteados" é exibida.
+- **Validação de Intervalo:** O sorteio só é permitido se o valor mínimo for menor ou igual ao máximo.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Pré-requisitos
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Node.js (recomenda-se a versão 18 ou superior)
+- npm ou yarn
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Como clonar e rodar a aplicação
 
-## Learn More
+1. **Clone o repositório:**
 
-To learn more about Next.js, take a look at the following resources:
+   ```bash
+   git clone https://github.com/joartur/gerador-de-numeros.git
+   cd gerador-de-numeros
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2. **Instale as dependências:**
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+   Com npm:
+   ```bash
+   npm install
+   ```
 
-## Deploy on Vercel
+   Ou com yarn:
+   ```bash
+   yarn
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+3. **Execute a aplicação em modo de desenvolvimento:**
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+   Com npm:
+   ```bash
+   npm run dev
+   ```
+
+   Ou com yarn:
+   ```bash
+   yarn dev
+   ```
+
+4. **Acesse no navegador:**
+
+   Abra [http://localhost:3000](http://localhost:3000) para visualizar a aplicação.
+
+## Estrutura do Projeto
+
+- O código principal está no arquivo `app/page.tsx` (para projetos Next.js 13+ com App Router).
+- Todo o layout, lógica de sorteio e histórico estão nesse componente.
+- O estilo é feito via CSS-in-JS (inline) para facilitar a customização.
+
+## Customização
+
+- Para mudar as cores ou o layout, basta alterar os estilos inline no arquivo principal.
+- Para aumentar o intervalo permitido, altere os valores de `min` e `max`.
+- Para resetar o histórico, basta mudar os valores de "De" ou "Até".
+
+## Dúvidas ou sugestões?
+
+Abra uma issue no repositório ou contribua com um Pull Request!
+
+---
+````
