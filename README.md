@@ -52,7 +52,7 @@ Este projeto é um gerador de números aleatórios, desenvolvido em Next.js com 
 
 4. **Acesse no navegador:**
 
-   Abra [http://localhost:3000](http://localhost:3000) para visualizar a aplicação.
+   Abra http://localhost:3000 para visualizar a aplicação.
 
 ## Estrutura do Projeto
 
@@ -72,8 +72,7 @@ Abra uma issue no repositório ou contribua com um Pull Request!
 
 ## Em Desenvolvimento
 
-[https://sortearnumeros.vercel.app/](https://sortearnumeros.vercel.app/)
-[portfolio](https://katherineoelsner.com/)
+https://sortearnumeros.vercel.app/
 
 ---
 ````
