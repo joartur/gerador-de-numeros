@@ -72,7 +72,6 @@ Abra uma issue no repositório ou contribua com um Pull Request!
 
 ## Em Desenvolvimento
 
-[https://sortearnumeros.vercel.app/](https://sortearnumeros.vercel.app/)
 https://sortearnumeros.vercel.app/
 
 ---
