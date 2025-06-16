@@ -6,6 +6,36 @@ export default function Home() {
   const [max, setMax] = useState<number>(10);
   const [history, setHistory] = useState<number[]>([]);
   const [error, setError] = useState<string>("");
+  const [inputMin, setInputMin] = useState<string>("1");
+  const [inputMax, setInputMax] = useState<string>("10");
+
+  // Atualiza o min/max somente ao clicar fora ou pressionar Enter
+  function handleBlurMin() {
+    const value = parseInt(inputMin, 10);
+    if (!isNaN(value)) {
+      setMin(value);
+      setHistory([]);
+      setError("");
+    }
+  }
+  function handleBlurMax() {
+    const value = parseInt(inputMax, 10);
+    if (!isNaN(value)) {
+      setMax(value);
+      setHistory([]);
+      setError("");
+    }
+  }
+  function handleKeyDownMin(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === "Enter") {
+      (e.target as HTMLInputElement).blur();
+    }
+  }
+  function handleKeyDownMax(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === "Enter") {
+      (e.target as HTMLInputElement).blur();
+    }
+  }
 
   // Gera os possíveis números ainda não sorteados
   const possibleNumbers = Array.from(
@@ -26,19 +56,10 @@ export default function Home() {
     setHistory([num, ...history]);
   }
 
-  // Quando mudar min/max, limpa histórico e erro
-  function handleChangeMin(value: number) {
-    setMin(value);
-    setHistory([]);
-    setError("");
-  }
-  function handleChangeMax(value: number) {
-    setMax(value);
-    setHistory([]);
-    setError("");
-  }
-
-  const allSorted = history.length === max - min + 1 && history.length > 0;
+  const totalNumbers = max - min + 1 > 0 ? max - min + 1 : 0;
+  const sortedCount = history.length;
+  const remainingCount = totalNumbers - sortedCount;
+  const allSorted = sortedCount === totalNumbers && sortedCount > 0;
 
   return (
     <main
@@ -102,10 +123,12 @@ export default function Home() {
               <input
                 id="min"
                 type="number"
-                value={min}
+                value={inputMin}
                 min={-99999}
                 max={max}
-                onChange={e => handleChangeMin(Number(e.target.value))}
+                onChange={e => setInputMin(e.target.value)}
+                onBlur={handleBlurMin}
+                onKeyDown={handleKeyDownMin}
                 style={{
                   marginTop: 4,
                   width: "100%",
@@ -133,10 +156,12 @@ export default function Home() {
               <input
                 id="max"
                 type="number"
-                value={max}
+                value={inputMax}
                 min={min}
                 max={99999}
-                onChange={e => handleChangeMax(Number(e.target.value))}
+                onChange={e => setInputMax(e.target.value)}
+                onBlur={handleBlurMax}
+                onKeyDown={handleKeyDownMax}
                 style={{
                   marginTop: 4,
                   width: "100%",
@@ -153,12 +178,12 @@ export default function Home() {
           </div>
           <button
             type="submit"
-            disabled={min > max || allSorted}
+            disabled={min > max || allSorted || totalNumbers <= 0}
             style={{
               marginTop: 10,
               padding: "0.7rem 0",
               background:
-                min > max || allSorted
+                min > max || allSorted || totalNumbers <= 0
                   ? "#cccccc"
                   : "linear-gradient(90deg,#3b82f6 0%, #06b6d4 100%)",
               color: "#fff",
@@ -166,7 +191,7 @@ export default function Home() {
               borderRadius: 8,
               fontSize: 18,
               fontWeight: 600,
-              cursor: min > max || allSorted ? "not-allowed" : "pointer",
+              cursor: min > max || allSorted || totalNumbers <= 0 ? "not-allowed" : "pointer",
               boxShadow: "0 2px 8px #0002",
               transition: "background 0.2s",
               letterSpacing: "0.5px",
@@ -227,7 +252,7 @@ export default function Home() {
             </div>
           )}
 
-          {/* Novo título "Números sorteados" */}
+          {/* Novo título "Foram sorteados (n) números" */}
           <h2
             style={{
               fontSize: 18,
@@ -238,7 +263,7 @@ export default function Home() {
               letterSpacing: "0.1px",
             }}
           >
-            Números sorteados
+            Foram sorteados {sortedCount} {sortedCount === 1 ? "número" : "números"}
           </h2>
 
           {/* Grid dos demais números */}
@@ -296,6 +321,20 @@ export default function Home() {
               letterSpacing: "0.3px",
             }}>
               Todos os números já foram sorteados
+            </div>
+          )}
+
+          {/* Faltam (n) números */}
+          {totalNumbers > 0 && !allSorted && (
+            <div style={{
+              marginTop: 18,
+              color: "#244466",
+              fontWeight: 500,
+              textAlign: "center",
+              fontSize: 16,
+              letterSpacing: "0.1px",
+            }}>
+              Faltam {remainingCount} {remainingCount === 1 ? "número" : "números"} serem sorteados
             </div>
           )}
         </section>
