@@ -275,70 +275,73 @@ export default function Home() {
                   />
                 </div>
               </div>
-              <button
-                type="submit"
-                disabled={min > max || allSorted || totalNumbers <= 0 || autoMode}
-                style={{
-                  marginTop: 10,
-                  padding: "0.7rem 0",
-                  background:
-                    min > max || allSorted || totalNumbers <= 0 || autoMode
-                      ? "#cccccc"
-                      : "linear-gradient(90deg,#3b82f6 0%, #06b6d4 100%)",
-                  color: "#fff",
-                  border: "none",
-                  borderRadius: 8,
-                  fontSize: 18,
-                  fontWeight: 600,
-                  cursor: min > max || allSorted || totalNumbers <= 0 || autoMode ? "not-allowed" : "pointer",
-                  boxShadow: "0 2px 8px #0002",
-                  transition: "background 0.2s",
-                  letterSpacing: "0.5px",
-                }}
-              >
-                Sortear
-              </button>
+              <div className="gn-buttons-row">
+                <button
+                  type="submit"
+                  disabled={min > max || allSorted || totalNumbers <= 0 || autoMode}
+                  style={{
+                    marginTop: 10,
+                    padding: "0.7rem 0",
+                    background:
+                      min > max || allSorted || totalNumbers <= 0 || autoMode
+                        ? "#cccccc"
+                        : "linear-gradient(90deg,#3b82f6 0%, #06b6d4 100%)",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: 8,
+                    fontSize: 18,
+                    fontWeight: 600,
+                    cursor: min > max || allSorted || totalNumbers <= 0 || autoMode ? "not-allowed" : "pointer",
+                    boxShadow: "0 2px 8px #0002",
+                    transition: "background 0.2s",
+                    letterSpacing: "0.5px",
+                    width: "100%",
+                  }}
+                >
+                  Sortear
+                </button>
 
-              {/* Botão Sortear Automaticamente */}
-              <button
-                type="button"
-                onClick={handleAutoStart}
-                disabled={
-                  min > max ||
-                  allSorted ||
-                  totalNumbers <= 0 ||
-                  autoMode
-                }
-                style={{
-                  marginTop: 10,
-                  padding: "0.7rem 0",
-                  background:
+                {/* Botão Sortear Automaticamente */}
+                <button
+                  type="button"
+                  onClick={handleAutoStart}
+                  disabled={
                     min > max ||
                     allSorted ||
                     totalNumbers <= 0 ||
                     autoMode
-                      ? "#cccccc"
-                      : "linear-gradient(90deg,#22d3ee 0%, #3b82f6 100%)",
-                  color: "#fff",
-                  border: "none",
-                  borderRadius: 8,
-                  fontSize: 18,
-                  fontWeight: 600,
-                  cursor:
-                    min > max ||
-                    allSorted ||
-                    totalNumbers <= 0 ||
-                    autoMode
-                      ? "not-allowed"
-                      : "pointer",
-                  boxShadow: "0 2px 8px #0002",
-                  transition: "background 0.2s",
-                  letterSpacing: "0.5px",
-                }}
-              >
-                Sortear Automaticamente
-              </button>
-
+                  }
+                  style={{
+                    marginTop: 10,
+                    padding: "0.7rem 0",
+                    background:
+                      min > max ||
+                      allSorted ||
+                      totalNumbers <= 0 ||
+                      autoMode
+                        ? "#cccccc"
+                        : "linear-gradient(90deg,#22d3ee 0%, #3b82f6 100%)",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: 8,
+                    fontSize: 18,
+                    fontWeight: 600,
+                    cursor:
+                      min > max ||
+                      allSorted ||
+                      totalNumbers <= 0 ||
+                      autoMode
+                        ? "not-allowed"
+                        : "pointer",
+                    boxShadow: "0 2px 8px #0002",
+                    transition: "background 0.2s",
+                    letterSpacing: "0.5px",
+                    width: "100%",
+                  }}
+                >
+                  Sortear Automaticamente
+                </button>
+              </div>
               {error && (
                 <span
                   style={{
@@ -587,6 +590,12 @@ export default function Home() {
           box-shadow: 0 4px 24px rgba(0,0,0,0.08);
           transition: max-width 0.3s, padding 0.3s;
         }
+        .gn-buttons-row {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          width: 100%;
+        }
         @media (min-width: 1200px) {
           .gn-main-section {
             max-width: 900px;
@@ -597,6 +606,15 @@ export default function Home() {
             max-height: 400px !important;
             grid-template-columns: repeat(auto-fit, minmax(70px, 1fr)) !important;
             gap: 18px !important;
+          }
+          .gn-buttons-row {
+            flex-direction: row;
+            gap: 18px;
+            width: 100%;
+          }
+          .gn-buttons-row > button {
+            width: 100%;
+            margin-top: 10px !important;
           }
         }
       `}</style>
