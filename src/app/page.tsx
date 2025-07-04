@@ -69,12 +69,22 @@ export default function Home() {
     setHistory([num, ...history]);
   }
 
-  // Função para sorteio automático
+  // Sorteio automático: começa já exibindo o primeiro número!
   function handleAutoStart() {
     if (min > max || possibleNumbers.length === 0) return;
     setAutoMode(true);
     setAutoRunning(true);
     setAutoCancelled(false);
+
+    // Sorteia imediatamente o primeiro número se não houver histórico ainda
+    setHistory((prevHistory) => {
+      if (prevHistory.length === 0) {
+        const randIdx = Math.floor(Math.random() * possibleNumbers.length);
+        const num = possibleNumbers[randIdx];
+        return [num];
+      }
+      return prevHistory;
+    });
   }
 
   function clearAutoInterval() {
@@ -86,7 +96,12 @@ export default function Home() {
 
   // Efeito para controlar o sorteio automático
   useEffect(() => {
-    if (autoMode && autoRunning && !autoCancelled && possibleNumbers.length > 0) {
+    if (
+      autoMode &&
+      autoRunning &&
+      !autoCancelled &&
+      possibleNumbers.length > 0
+    ) {
       if (!autoInterval.current) {
         autoInterval.current = setInterval(() => {
           setHistory((prevHistory) => {
