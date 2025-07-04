@@ -178,16 +178,7 @@ export default function Home() {
         padding: "2rem",
       }}
     >
-      <section
-        style={{
-          background: "#fff",
-          borderRadius: 16,
-          boxShadow: "0 4px 24px rgba(0,0,0,0.08)",
-          padding: "2.5rem 2rem 2rem 2rem",
-          maxWidth: 420,
-          width: "100%",
-        }}
-      >
+      <section className="gn-main-section">
         <h1
           style={{
             marginBottom: 28,
@@ -474,6 +465,7 @@ export default function Home() {
 
         {/* Grid dos demais números */}
         <div
+          className="gn-grid"
           style={{
             minHeight: 56,
             maxHeight: 220,
@@ -574,7 +566,7 @@ export default function Home() {
           </div>
         )}
       </section>
-      {/* CSS Animation Keyframes */}
+      {/* CSS Animation Keyframes e responsividade */}
       <style>{`
         @keyframes fadeIn {
           from { opacity: 0; transform: translateY(10px);}
@@ -584,6 +576,28 @@ export default function Home() {
           0% { transform: scale(0.6); opacity: 0.6;}
           60% { transform: scale(1.2);}
           100% { transform: scale(1); opacity: 1;}
+        }
+        .gn-main-section {
+          max-width: 420px;
+          width: 100%;
+          padding: 2.5rem 2rem 2rem 2rem;
+          margin: 0 auto;
+          background: #fff;
+          border-radius: 16px;
+          box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+          transition: max-width 0.3s, padding 0.3s;
+        }
+        @media (min-width: 1200px) {
+          .gn-main-section {
+            max-width: 900px;
+            padding: 3.5rem 5rem 3rem 5rem;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.13);
+          }
+          .gn-grid {
+            max-height: 400px !important;
+            grid-template-columns: repeat(auto-fit, minmax(70px, 1fr)) !important;
+            gap: 18px !important;
+          }
         }
       `}</style>
     </main>
