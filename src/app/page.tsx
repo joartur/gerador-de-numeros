@@ -12,6 +12,7 @@ export default function Home() {
   const [autoMode, setAutoMode] = useState<boolean>(false);
   const [autoRunning, setAutoRunning] = useState<boolean>(false);
   const [autoCancelled, setAutoCancelled] = useState<boolean>(false);
+  const [manualMode, setManualMode] = useState<boolean>(false);
   const autoInterval = useRef<NodeJS.Timeout | null>(null);
 
   // Atualiza o min/max somente ao clicar fora ou pressionar Enter
@@ -24,6 +25,7 @@ export default function Home() {
       setAutoMode(false);
       setAutoRunning(false);
       setAutoCancelled(false);
+      setManualMode(false);
       clearAutoInterval();
     }
   }
@@ -36,6 +38,7 @@ export default function Home() {
       setAutoMode(false);
       setAutoRunning(false);
       setAutoCancelled(false);
+      setManualMode(false);
       clearAutoInterval();
     }
   }
@@ -59,6 +62,7 @@ export default function Home() {
   // Sorteia um novo número não repetido
   function handleGenerate() {
     setError("");
+    setManualMode(true);
     if (min > max) {
       setError("O valor mínimo deve ser menor ou igual ao máximo.");
       return;
@@ -73,6 +77,7 @@ export default function Home() {
   function handleAutoStart() {
     if (min > max || possibleNumbers.length === 0) return;
     setAutoMode(true);
+    setManualMode(false);
     setAutoRunning(true);
     setAutoCancelled(false);
 
@@ -154,6 +159,7 @@ export default function Home() {
     setAutoMode(false);
     setAutoRunning(false);
     setAutoCancelled(false);
+    setManualMode(false);
     setHistory([]);
     setError("");
     clearAutoInterval();
@@ -279,6 +285,7 @@ export default function Home() {
                 <button
                   type="submit"
                   disabled={min > max || allSorted || totalNumbers <= 0 || autoMode}
+                  onClick={() => setManualMode(true)}
                   style={{
                     marginTop: 10,
                     padding: "0.7rem 0",
@@ -301,46 +308,48 @@ export default function Home() {
                   Sortear
                 </button>
 
-                {/* Botão Sortear Automaticamente */}
-                <button
-                  type="button"
-                  onClick={handleAutoStart}
-                  disabled={
-                    min > max ||
-                    allSorted ||
-                    totalNumbers <= 0 ||
-                    autoMode
-                  }
-                  style={{
-                    marginTop: 10,
-                    padding: "0.7rem 0",
-                    background:
+                {/* Botão Sortear Automaticamente (oculto em modo manual) */}
+                {!manualMode && (
+                  <button
+                    type="button"
+                    onClick={handleAutoStart}
+                    disabled={
                       min > max ||
                       allSorted ||
                       totalNumbers <= 0 ||
                       autoMode
-                        ? "#cccccc"
-                        : "linear-gradient(90deg,#22d3ee 0%, #3b82f6 100%)",
-                    color: "#fff",
-                    border: "none",
-                    borderRadius: 8,
-                    fontSize: 18,
-                    fontWeight: 600,
-                    cursor:
-                      min > max ||
-                      allSorted ||
-                      totalNumbers <= 0 ||
-                      autoMode
-                        ? "not-allowed"
-                        : "pointer",
-                    boxShadow: "0 2px 8px #0002",
-                    transition: "background 0.2s",
-                    letterSpacing: "0.5px",
-                    width: "100%",
-                  }}
-                >
-                  Sortear Automaticamente
-                </button>
+                    }
+                    style={{
+                      marginTop: 10,
+                      padding: "0.7rem 0",
+                      background:
+                        min > max ||
+                        allSorted ||
+                        totalNumbers <= 0 ||
+                        autoMode
+                          ? "#cccccc"
+                          : "linear-gradient(90deg,#22d3ee 0%, #3b82f6 100%)",
+                      color: "#fff",
+                      border: "none",
+                      borderRadius: 8,
+                      fontSize: 18,
+                      fontWeight: 600,
+                      cursor:
+                        min > max ||
+                        allSorted ||
+                        totalNumbers <= 0 ||
+                        autoMode
+                          ? "not-allowed"
+                          : "pointer",
+                      boxShadow: "0 2px 8px #0002",
+                      transition: "background 0.2s",
+                      letterSpacing: "0.5px",
+                      width: "100%",
+                    }}
+                  >
+                    Sortear Automaticamente
+                  </button>
+                )}
               </div>
               {error && (
                 <span
