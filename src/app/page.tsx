@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 
 export default function Home() {
   const [min, setMin] = useState<number>(1);
@@ -9,6 +9,11 @@ export default function Home() {
   const [inputMin, setInputMin] = useState<string>("1");
   const [inputMax, setInputMax] = useState<string>("10");
 
+  const [autoMode, setAutoMode] = useState<boolean>(false);
+  const [autoRunning, setAutoRunning] = useState<boolean>(false);
+  const [autoCancelled, setAutoCancelled] = useState<boolean>(false);
+  const autoInterval = useRef<NodeJS.Timeout | null>(null);
+
   // Atualiza o min/max somente ao clicar fora ou pressionar Enter
   function handleBlurMin() {
     const value = parseInt(inputMin, 10);
@@ -16,6 +21,10 @@ export default function Home() {
       setMin(value);
       setHistory([]);
       setError("");
+      setAutoMode(false);
+      setAutoRunning(false);
+      setAutoCancelled(false);
+      clearAutoInterval();
     }
   }
   function handleBlurMax() {
@@ -24,6 +33,10 @@ export default function Home() {
       setMax(value);
       setHistory([]);
       setError("");
+      setAutoMode(false);
+      setAutoRunning(false);
+      setAutoCancelled(false);
+      clearAutoInterval();
     }
   }
   function handleKeyDownMin(e: React.KeyboardEvent<HTMLInputElement>) {
@@ -56,11 +69,87 @@ export default function Home() {
     setHistory([num, ...history]);
   }
 
+  // Função para sorteio automático
+  function handleAutoStart() {
+    if (min > max || possibleNumbers.length === 0) return;
+    setAutoMode(true);
+    setAutoRunning(true);
+    setAutoCancelled(false);
+  }
+
+  function clearAutoInterval() {
+    if (autoInterval.current) {
+      clearInterval(autoInterval.current);
+      autoInterval.current = null;
+    }
+  }
+
+  // Efeito para controlar o sorteio automático
+  useEffect(() => {
+    if (autoMode && autoRunning && !autoCancelled && possibleNumbers.length > 0) {
+      if (!autoInterval.current) {
+        autoInterval.current = setInterval(() => {
+          setHistory((prevHistory) => {
+            const remaining = Array.from(
+              { length: max - min + 1 },
+              (_, i) => min + i
+            ).filter((n) => !prevHistory.includes(n));
+            if (remaining.length === 0) {
+              clearAutoInterval();
+              setAutoRunning(false);
+              return prevHistory;
+            }
+            const randIdx = Math.floor(Math.random() * remaining.length);
+            const num = remaining[randIdx];
+            return [num, ...prevHistory];
+          });
+        }, 20000); // 20 segundos
+      }
+    } else {
+      clearAutoInterval();
+    }
+    // Limpa o intervalo ao desmontar
+    return () => clearAutoInterval();
+    // eslint-disable-next-line
+  }, [autoMode, autoRunning, autoCancelled, min, max]);
+
+  // Quando terminar todos os números, encerra o sorteio automático
+  useEffect(() => {
+    if (autoMode && possibleNumbers.length === 0 && autoRunning) {
+      setAutoRunning(false);
+      clearAutoInterval();
+    }
+    // eslint-disable-next-line
+  }, [history]);
+
+  // Parar completamente o sorteio automático
+  function handleAutoStop() {
+    setAutoRunning(false);
+    setAutoCancelled(true);
+    clearAutoInterval();
+  }
+
+  // Pausar/reiniciar
+  function handleAutoPauseResume() {
+    setAutoRunning((v) => !v);
+  }
+
+  // Voltar ao início (reset para tela de escolha)
+  function handleBackToStart() {
+    setAutoMode(false);
+    setAutoRunning(false);
+    setAutoCancelled(false);
+    setHistory([]);
+    setError("");
+    clearAutoInterval();
+  }
+
   const totalNumbers = max - min + 1 > 0 ? max - min + 1 : 0;
   const sortedCount = history.length;
   const remainingCount = totalNumbers - sortedCount;
   const allSorted = sortedCount === totalNumbers && sortedCount > 0;
 
+  // Renderização principal
   return (
     <main
       style={{
@@ -96,248 +185,379 @@ export default function Home() {
         >
           Gerador de Números Aleatórios
         </h1>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleGenerate();
-          }}
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 16,
-            marginBottom: 18,
-          }}
-        >
-          <div style={{ display: "flex", gap: 12 }}>
-            <div style={{ flex: 1 }}>
-              <label
-                htmlFor="min"
-                style={{
-                  fontSize: 13,
-                  color: "#244466",
-                  fontWeight: 500,
-                }}
-              >
-                De
-              </label>
-              <input
-                id="min"
-                type="number"
-                value={inputMin}
-                min={-99999}
-                max={max}
-                onChange={e => setInputMin(e.target.value)}
-                onBlur={handleBlurMin}
-                onKeyDown={handleKeyDownMin}
-                style={{
-                  marginTop: 4,
-                  width: "100%",
-                  padding: "0.5rem",
-                  border: "1px solid #dde6f1",
-                  borderRadius: 6,
-                  fontSize: 16,
-                  boxShadow: "0 1px 2px #0001",
-                  outline: "none",
-                  transition: "border 0.2s",
-                }}
-              />
-            </div>
-            <div style={{ flex: 1 }}>
-              <label
-                htmlFor="max"
-                style={{
-                  fontSize: 13,
-                  color: "#244466",
-                  fontWeight: 500,
-                }}
-              >
-                Até
-              </label>
-              <input
-                id="max"
-                type="number"
-                value={inputMax}
-                min={min}
-                max={99999}
-                onChange={e => setInputMax(e.target.value)}
-                onBlur={handleBlurMax}
-                onKeyDown={handleKeyDownMax}
-                style={{
-                  marginTop: 4,
-                  width: "100%",
-                  padding: "0.5rem",
-                  border: "1px solid #dde6f1",
-                  borderRadius: 6,
-                  fontSize: 16,
-                  boxShadow: "0 1px 2px #0001",
-                  outline: "none",
-                  transition: "border 0.2s",
-                }}
-              />
-            </div>
-          </div>
-          <button
-            type="submit"
-            disabled={min > max || allSorted || totalNumbers <= 0}
-            style={{
-              marginTop: 10,
-              padding: "0.7rem 0",
-              background:
-                min > max || allSorted || totalNumbers <= 0
-                  ? "#cccccc"
-                  : "linear-gradient(90deg,#3b82f6 0%, #06b6d4 100%)",
-              color: "#fff",
-              border: "none",
-              borderRadius: 8,
-              fontSize: 18,
-              fontWeight: 600,
-              cursor: min > max || allSorted || totalNumbers <= 0 ? "not-allowed" : "pointer",
-              boxShadow: "0 2px 8px #0002",
-              transition: "background 0.2s",
-              letterSpacing: "0.5px",
-            }}
-          >
-            Sortear
-          </button>
-          {error && (
-            <span
+
+        {/* INPUTS E BOTÕES - só exibe se não foi cancelado o sorteio automático */}
+        {!autoCancelled ? (
+          <>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleGenerate();
+              }}
               style={{
-                color: "#ef4444",
-                fontSize: 14,
-                textAlign: "center",
-                marginTop: 4,
+                display: "flex",
+                flexDirection: "column",
+                gap: 16,
+                marginBottom: 18,
               }}
             >
-              {error}
-            </span>
-          )}
-        </form>
-        <section>
-          {/* Último número sorteado em destaque */}
-          {history.length > 0 && (
-            <div style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              marginBottom: 10,
-              animation: "fadeIn 0.6s"
-            }}>
-              <span style={{
-                fontSize: 15,
-                color: "#00aaff",
-                fontWeight: 600,
-                letterSpacing: "0.2px",
-                marginBottom: 4,
-              }}>
-                Último número sorteado
-              </span>
-              <div style={{
-                background: "linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%)",
-                color: "#fff",
-                borderRadius: 16,
-                boxShadow: "0 2px 14px #0001",
-                padding: "1.4rem 0",
-                width: 120,
-                fontSize: 42,
-                fontWeight: 900,
-                textAlign: "center",
-                marginBottom: 2,
-                marginTop: 2,
-                letterSpacing: "2px",
-                transition: "all 0.2s",
-                animation: "popIn 0.3s",
-              }}>
-                {history[0]}
+              <div style={{ display: "flex", gap: 12 }}>
+                <div style={{ flex: 1 }}>
+                  <label
+                    htmlFor="min"
+                    style={{
+                      fontSize: 13,
+                      color: "#244466",
+                      fontWeight: 500,
+                    }}
+                  >
+                    De
+                  </label>
+                  <input
+                    id="min"
+                    type="number"
+                    value={inputMin}
+                    min={-99999}
+                    max={max}
+                    onChange={e => setInputMin(e.target.value)}
+                    onBlur={handleBlurMin}
+                    onKeyDown={handleKeyDownMin}
+                    style={{
+                      marginTop: 4,
+                      width: "100%",
+                      padding: "0.5rem",
+                      border: "1px solid #dde6f1",
+                      borderRadius: 6,
+                      fontSize: 16,
+                      boxShadow: "0 1px 2px #0001",
+                      outline: "none",
+                      transition: "border 0.2s",
+                    }}
+                  />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <label
+                    htmlFor="max"
+                    style={{
+                      fontSize: 13,
+                      color: "#244466",
+                      fontWeight: 500,
+                    }}
+                  >
+                    Até
+                  </label>
+                  <input
+                    id="max"
+                    type="number"
+                    value={inputMax}
+                    min={min}
+                    max={99999}
+                    onChange={e => setInputMax(e.target.value)}
+                    onBlur={handleBlurMax}
+                    onKeyDown={handleKeyDownMax}
+                    style={{
+                      marginTop: 4,
+                      width: "100%",
+                      padding: "0.5rem",
+                      border: "1px solid #dde6f1",
+                      borderRadius: 6,
+                      fontSize: 16,
+                      boxShadow: "0 1px 2px #0001",
+                      outline: "none",
+                      transition: "border 0.2s",
+                    }}
+                  />
+                </div>
               </div>
-            </div>
-          )}
+              <button
+                type="submit"
+                disabled={min > max || allSorted || totalNumbers <= 0 || autoMode}
+                style={{
+                  marginTop: 10,
+                  padding: "0.7rem 0",
+                  background:
+                    min > max || allSorted || totalNumbers <= 0 || autoMode
+                      ? "#cccccc"
+                      : "linear-gradient(90deg,#3b82f6 0%, #06b6d4 100%)",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: 8,
+                  fontSize: 18,
+                  fontWeight: 600,
+                  cursor: min > max || allSorted || totalNumbers <= 0 || autoMode ? "not-allowed" : "pointer",
+                  boxShadow: "0 2px 8px #0002",
+                  transition: "background 0.2s",
+                  letterSpacing: "0.5px",
+                }}
+              >
+                Sortear
+              </button>
 
-          {/* Novo título "Foram sorteados (n) números" */}
-          <h2
-            style={{
-              fontSize: 18,
-              fontWeight: 500,
-              margin: "8px 0 12px 0",
-              color: "#244466",
-              textAlign: "center",
-              letterSpacing: "0.1px",
-            }}
-          >
-            Foram sorteados {sortedCount} {sortedCount === 1 ? "número" : "números"}
-          </h2>
+              {/* Botão Sortear Automaticamente */}
+              <button
+                type="button"
+                onClick={handleAutoStart}
+                disabled={
+                  min > max ||
+                  allSorted ||
+                  totalNumbers <= 0 ||
+                  autoMode
+                }
+                style={{
+                  marginTop: 10,
+                  padding: "0.7rem 0",
+                  background:
+                    min > max ||
+                    allSorted ||
+                    totalNumbers <= 0 ||
+                    autoMode
+                      ? "#cccccc"
+                      : "linear-gradient(90deg,#22d3ee 0%, #3b82f6 100%)",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: 8,
+                  fontSize: 18,
+                  fontWeight: 600,
+                  cursor:
+                    min > max ||
+                    allSorted ||
+                    totalNumbers <= 0 ||
+                    autoMode
+                      ? "not-allowed"
+                      : "pointer",
+                  boxShadow: "0 2px 8px #0002",
+                  transition: "background 0.2s",
+                  letterSpacing: "0.5px",
+                }}
+              >
+                Sortear Automaticamente
+              </button>
 
-          {/* Grid dos demais números */}
+              {error && (
+                <span
+                  style={{
+                    color: "#ef4444",
+                    fontSize: 14,
+                    textAlign: "center",
+                    marginTop: 4,
+                  }}
+                >
+                  {error}
+                </span>
+              )}
+            </form>
+          </>
+        ) : null}
+
+        {/* CONTROLES DO SORTEIO AUTOMÁTICO */}
+        {autoMode && (
           <div
             style={{
-              minHeight: 56,
-              maxHeight: 220,
-              overflowY: "auto",
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(60px, 1fr))",
-              gap: 10,
-              margin: "0 auto",
-              width: "100%",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              gap: 14,
+              margin: "16px 0",
             }}
           >
-            {history.length <= 1 && (
-              <span
-                style={{
-                  color: "#8796ac",
-                  fontSize: 15,
-                  gridColumn: "1/-1",
-                  textAlign: "center",
-                }}
-              >
-                Nenhum número anterior sorteado.
-              </span>
-            )}
-            {history.slice(1).map((num, idx) => (
-              <div
-                key={idx}
-                style={{
-                  background: "#f1f7ff",
-                  color: "#244466",
-                  borderRadius: 8,
-                  boxShadow: "0 1px 4px #0001",
-                  padding: "0.7rem 0",
-                  fontSize: 20,
-                  fontWeight: 700,
-                  textAlign: "center",
-                  animation: "fadeIn 0.4s",
-                }}
-              >
-                {num}
-              </div>
-            ))}
+            <button
+              type="button"
+              onClick={handleAutoPauseResume}
+              style={{
+                padding: "0.5rem 1.2rem",
+                background: autoRunning
+                  ? "linear-gradient(90deg,#f59e42 0%, #fb7185 100%)"
+                  : "linear-gradient(90deg,#22c55e 0%, #3b82f6 100%)",
+                color: "#fff",
+                border: "none",
+                borderRadius: 8,
+                fontSize: 16,
+                fontWeight: 600,
+                cursor: "pointer",
+                boxShadow: "0 2px 8px #0002",
+                transition: "background 0.2s",
+                letterSpacing: "0.3px",
+              }}
+            >
+              {autoRunning ? "Pausar" : "Retomar"}
+            </button>
+            <button
+              type="button"
+              onClick={handleAutoStop}
+              style={{
+                padding: "0.5rem 1.2rem",
+                background:
+                  "linear-gradient(90deg,#ef4444 0%, #f59e42 100%)",
+                color: "#fff",
+                border: "none",
+                borderRadius: 8,
+                fontSize: 16,
+                fontWeight: 600,
+                cursor: "pointer",
+                boxShadow: "0 2px 8px #0002",
+                transition: "background 0.2s",
+                letterSpacing: "0.3px",
+              }}
+            >
+              Parar
+            </button>
           </div>
-          {/* Mensagem se todos foram sorteados */}
-          {allSorted && (
-            <div style={{
-              marginTop: 22,
-              color: "#10b981",
-              fontWeight: 600,
-              textAlign: "center",
-              fontSize: 18,
-              letterSpacing: "0.3px",
-            }}>
-              Todos os números já foram sorteados
-            </div>
-          )}
+        )}
 
-          {/* Faltam (n) números */}
-          {totalNumbers > 0 && !allSorted && (
-            <div style={{
-              marginTop: 18,
-              color: "#244466",
-              fontWeight: 500,
-              textAlign: "center",
-              fontSize: 16,
-              letterSpacing: "0.1px",
+        {/* Último número sorteado em destaque */}
+        {history.length > 0 && (
+          <div style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            marginBottom: 10,
+            animation: "fadeIn 0.6s"
+          }}>
+            <span style={{
+              fontSize: 15,
+              color: "#00aaff",
+              fontWeight: 600,
+              letterSpacing: "0.2px",
+              marginBottom: 4,
             }}>
-              Faltam {remainingCount} {remainingCount === 1 ? "número" : "números"} serem sorteados
+              Último número sorteado
+            </span>
+            <div style={{
+              background: "linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%)",
+              color: "#fff",
+              borderRadius: 16,
+              boxShadow: "0 2px 14px #0001",
+              padding: "1.4rem 0",
+              width: 120,
+              fontSize: 42,
+              fontWeight: 900,
+              textAlign: "center",
+              marginBottom: 2,
+              marginTop: 2,
+              letterSpacing: "2px",
+              transition: "all 0.2s",
+              animation: "popIn 0.3s",
+            }}>
+              {history[0]}
             </div>
+          </div>
+        )}
+
+        {/* Novo título "Foram sorteados (n) números" */}
+        <h2
+          style={{
+            fontSize: 18,
+            fontWeight: 500,
+            margin: "8px 0 12px 0",
+            color: "#244466",
+            textAlign: "center",
+            letterSpacing: "0.1px",
+          }}
+        >
+          Foram sorteados {sortedCount} {sortedCount === 1 ? "número" : "números"}
+        </h2>
+
+        {/* Grid dos demais números */}
+        <div
+          style={{
+            minHeight: 56,
+            maxHeight: 220,
+            overflowY: "auto",
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(60px, 1fr))",
+            gap: 10,
+            margin: "0 auto",
+            width: "100%",
+          }}
+        >
+          {history.length <= 1 && (
+            <span
+              style={{
+                color: "#8796ac",
+                fontSize: 15,
+                gridColumn: "1/-1",
+                textAlign: "center",
+              }}
+            >
+              Nenhum número anterior sorteado.
+            </span>
           )}
-        </section>
+          {history.slice(1).map((num, idx) => (
+            <div
+              key={idx}
+              style={{
+                background: "#f1f7ff",
+                color: "#244466",
+                borderRadius: 8,
+                boxShadow: "0 1px 4px #0001",
+                padding: "0.7rem 0",
+                fontSize: 20,
+                fontWeight: 700,
+                textAlign: "center",
+                animation: "fadeIn 0.4s",
+              }}
+            >
+              {num}
+            </div>
+          ))}
+        </div>
+        {/* Mensagem se todos foram sorteados */}
+        {allSorted && (
+          <div style={{
+            marginTop: 22,
+            color: "#10b981",
+            fontWeight: 600,
+            textAlign: "center",
+            fontSize: 18,
+            letterSpacing: "0.3px",
+          }}>
+            Todos os números já foram sorteados
+          </div>
+        )}
+
+        {/* Faltam (n) números */}
+        {totalNumbers > 0 && !allSorted && (
+          <div style={{
+            marginTop: 18,
+            color: "#244466",
+            fontWeight: 500,
+            textAlign: "center",
+            fontSize: 16,
+            letterSpacing: "0.1px",
+          }}>
+            Faltam {remainingCount} {remainingCount === 1 ? "número" : "números"} serem sorteados
+          </div>
+        )}
+
+        {/* Sorteio automático cancelado */}
+        {autoCancelled && (
+          <div style={{ marginTop: 30, textAlign: "center" }}>
+            <div style={{
+              color: "#ef4444",
+              fontWeight: 700,
+              fontSize: 18,
+              marginBottom: 16,
+            }}>
+              Sorteio Automático Cancelado
+            </div>
+            <a
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                handleBackToStart();
+              }}
+              style={{
+                color: "#2563eb",
+                textDecoration: "underline",
+                cursor: "pointer",
+                fontSize: 16,
+                fontWeight: 600,
+              }}
+            >
+              Começar novamente
+            </a>
+          </div>
+        )}
       </section>
       {/* CSS Animation Keyframes */}
       <style>{`
