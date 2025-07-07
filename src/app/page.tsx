@@ -20,9 +20,9 @@ export default function Home() {
     if (typeof window !== "undefined" && "speechSynthesis" in window && historyArr.length > 0) {
       let text = "";
       if (historyArr.length === 1) {
-        text = `Primeiro número ${historyArr[0]}`;
+        text = `Primeiro número sorteado ${historyArr[0]}`;
       } else {
-        text = `Número sorteado foi ${historyArr[0]}`;
+        text = `Número sorteado ${historyArr[0]}`;
       }
       // A cada 10 números sorteados (exceto o primeiro), avisa a quantidade de dezenas
       if (historyArr.length > 0 && historyArr.length % 10 === 0) {
