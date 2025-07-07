@@ -15,6 +15,26 @@ export default function Home() {
   const [manualMode, setManualMode] = useState<boolean>(false);
   const autoInterval = useRef<NodeJS.Timeout | null>(null);
 
+  // Função de áudio customizada conforme requisitos
+  function speakNumberCustom(historyArr: number[]) {
+    if (typeof window !== "undefined" && "speechSynthesis" in window && historyArr.length > 0) {
+      let text = "";
+      if (historyArr.length === 1) {
+        text = `Primeiro número ${historyArr[0]}`;
+      } else {
+        text = `Número sorteado foi ${historyArr[0]}`;
+      }
+      // A cada 10 números sorteados (exceto o primeiro), avisa a quantidade de dezenas
+      if (historyArr.length > 0 && historyArr.length % 10 === 0) {
+        const dezenas = historyArr.length / 10;
+        text += `. Foram sortados ${dezenas} ${dezenas === 1 ? "dezena" : "dezenas"}`;
+      }
+      const utterance = new window.SpeechSynthesisUtterance(text);
+      utterance.lang = "pt-BR";
+      window.speechSynthesis.speak(utterance);
+    }
+  }
+
   // Atualiza o min/max somente ao clicar fora ou pressionar Enter
   function handleBlurMin() {
     const value = parseInt(inputMin, 10);
@@ -70,7 +90,9 @@ export default function Home() {
     if (possibleNumbers.length === 0) return;
     const randIdx = Math.floor(Math.random() * possibleNumbers.length);
     const num = possibleNumbers[randIdx];
-    setHistory([num, ...history]);
+    const newHistory = [num, ...history];
+    setHistory(newHistory);
+    speakNumberCustom(newHistory);
   }
 
   // Sorteio automático: começa já exibindo o primeiro número!
@@ -86,7 +108,9 @@ export default function Home() {
       if (prevHistory.length === 0) {
         const randIdx = Math.floor(Math.random() * possibleNumbers.length);
         const num = possibleNumbers[randIdx];
-        return [num];
+        const newHistory = [num];
+        speakNumberCustom(newHistory);
+        return newHistory;
       }
       return prevHistory;
     });
@@ -121,7 +145,9 @@ export default function Home() {
             }
             const randIdx = Math.floor(Math.random() * remaining.length);
             const num = remaining[randIdx];
-            return [num, ...prevHistory];
+            const newHistory = [num, ...prevHistory];
+            speakNumberCustom(newHistory);
+            return newHistory;
           });
         }, 20000); // 20 segundos
       }
