@@ -27,7 +27,7 @@ export default function Home() {
       // A cada 10 números sorteados (exceto o primeiro), avisa a quantidade de dezenas
       if (historyArr.length > 0 && historyArr.length % 10 === 0) {
         const dezenas = historyArr.length / 10;
-        text += `. Foram sortados ${dezenas} ${dezenas === 1 ? "dezena" : "dezenas"}`;
+        text += `. Foram sortados ${dezenas} ${dezenas === 1 ? "dezena" : "dezenas"} números`;
       }
       const utterance = new window.SpeechSynthesisUtterance(text);
       utterance.lang = "pt-BR";
