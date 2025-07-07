@@ -20,14 +20,14 @@ export default function Home() {
     if (typeof window !== "undefined" && "speechSynthesis" in window && historyArr.length > 0) {
       let text = "";
       if (historyArr.length === 1) {
-        text = `Primeiro número sorteado ${historyArr[0]}`;
+        text = `Primeiro número ${historyArr[0]}`;
       } else {
-        text = `Número sorteado ${historyArr[0]}`;
+        text = `Número sorteado foi ${historyArr[0]}`;
       }
       // A cada 10 números sorteados (exceto o primeiro), avisa a quantidade de dezenas
       if (historyArr.length > 0 && historyArr.length % 10 === 0) {
         const dezenas = historyArr.length / 10;
-        text += `. Foram sortados ${dezenas} ${dezenas === 1 ? "dezena" : "dezenas"} números`;
+        text += `. Foram sortados ${dezenas} ${dezenas === 1 ? "dezena" : "dezenas"}`;
       }
       const utterance = new window.SpeechSynthesisUtterance(text);
       utterance.lang = "pt-BR";
@@ -149,7 +149,7 @@ export default function Home() {
             speakNumberCustom(newHistory);
             return newHistory;
           });
-        }, 15000); // 15 segundos
+        }, 20000); // 20 segundos
       }
     } else {
       clearAutoInterval();
@@ -195,6 +195,9 @@ export default function Home() {
   const sortedCount = history.length;
   const remainingCount = totalNumbers - sortedCount;
   const allSorted = sortedCount === totalNumbers && sortedCount > 0;
+
+  // Ordena os números sorteados (exceto o último) em ordem crescente
+  const sortedRestHistory = history.slice(1).sort((a, b) => a - b);
 
   // Renderização principal
   return (
@@ -501,7 +504,7 @@ export default function Home() {
           Foram sorteados {sortedCount} {sortedCount === 1 ? "número" : "números"}
         </h2>
 
-        {/* Grid dos demais números */}
+        {/* Grid dos demais números (ordenados) */}
         <div
           className="gn-grid"
           style={{
@@ -527,7 +530,7 @@ export default function Home() {
               Nenhum número anterior sorteado.
             </span>
           )}
-          {history.slice(1).map((num, idx) => (
+          {sortedRestHistory.map((num, idx) => (
             <div
               key={idx}
               style={{
