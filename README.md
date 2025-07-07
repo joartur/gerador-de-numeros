@@ -34,7 +34,7 @@ Este projeto é um gerador de números aleatórios, desenvolvido em Next.js com 
 1. **Clone o repositório:**
 
    ```bash
-   git clone [https://github.com/joartur/gerador-de-numeros.git](https://github.com/joartur/gerador-de-numeros.git)
+   git clone https://github.com/joartur/gerador-de-numeros.git
    cd gerador-de-numeros
    ```
 
