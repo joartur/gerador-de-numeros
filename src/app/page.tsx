@@ -149,7 +149,7 @@ export default function Home() {
             speakNumberCustom(newHistory);
             return newHistory;
           });
-        }, 20000); // 20 segundos
+        }, 15000); // 15 segundos
       }
     } else {
       clearAutoInterval();
