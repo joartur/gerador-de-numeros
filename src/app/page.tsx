@@ -217,86 +217,145 @@ export default function Home() {
         padding: "2rem",
       }}
     >
-    <section className="gn-main-section">
-      <div
-        className="gn-start-header"
+<section className="gn-main-section">
+  <h1
+    style={{
+      marginBottom: 28,
+      fontSize: 28,
+      fontWeight: 700,
+      letterSpacing: "-0.5px",
+      color: "#244466",
+      textAlign: "center",
+    }}
+  >
+    Gerador de Números Aleatórios
+  </h1>
+  <div className="gn-logo-container">
+    <img
+      src="/logo.png"
+      alt="Logo"
+      className="gn-logo-img"
+    />
+  </div>
+  {/* TELA INICIAL: escolha do modo */}
+  {showStartScreen ? (
+    <div
+      className="gn-start-buttons"
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: 22,
+        margin: "54px 0 40px 0",
+        width: "100%",
+      }}
+    >
+      <button
+        type="button"
+        className="gn-start-btn"
         style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          width: "100%",
+          padding: "1.2rem 0",
+          background: "linear-gradient(90deg,#3b82f6 0%, #06b6d4 100%)",
+          color: "#fff",
+          border: "none",
+          borderRadius: 12,
+          fontSize: 22,
+          fontWeight: 700,
+          cursor: "pointer",
+          width: 300,
+          maxWidth: "100%",
+          boxShadow: "0 2px 12px #0001",
+          letterSpacing: "0.5px",
+          transition: "background 0.2s",
+        }}
+        onClick={() => {
+          setManualMode(true);
+          setAutoMode(false);
+          setAutoCancelled(false);
+          setShowStartScreen(false);
+          setHistory([]);
+          setError("");
         }}
       >
-        <h1
-          style={{
-            marginBottom: 18,
-            fontSize: 28,
-            fontWeight: 700,
-            letterSpacing: "-0.5px",
-            color: "#244466",
-            textAlign: "center",
-          }}
-        >
-          Gerador de Números Aleatórios
-        </h1>
-        <img
-          src="/logo.png"
-          alt="Logo"
-          style={{
-            width: 100,
-            height: 100,
-            objectFit: "contain",
-            marginBottom: 28,
-            display: "block",
-          }}
-        />
-      </div>
-    
-      {/* TELA INICIAL: escolha do modo */}
-      {showStartScreen ? (
-        <div
-          className="gn-start-buttons"
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            gap: 22,
-            margin: "0 0 40px 0",
-            width: "100%",
-          }}
-        >
-          <button
-            type="button"
-            className="gn-start-btn"
-            // ... (restante igual)
-          >
-            Sortear Manualmente
-          </button>
-          <button
-            type="button"
-            className="gn-start-btn"
-            // ... (restante igual)
-          >
-            Sortear Automaticamente
-          </button>
-          <style>{`
-            @media (min-width: 1200px) {
-              .gn-start-buttons {
-                flex-direction: row !important;
-                justify-content: center;
-                align-items: stretch;
-                gap: 40px;
-                margin: 0 0 48px 0;
-              }
-              .gn-start-btn {
-                width: 320px !important;
-                max-width: 100%;
-              }
+        Sortear Manualmente
+      </button>
+      <button
+        type="button"
+        className="gn-start-btn"
+        style={{
+          padding: "1.2rem 0",
+          background: "linear-gradient(90deg,#22d3ee 0%, #3b82f6 100%)",
+          color: "#fff",
+          border: "none",
+          borderRadius: 12,
+          fontSize: 22,
+          fontWeight: 700,
+          cursor: "pointer",
+          width: 300,
+          maxWidth: "100%",
+          boxShadow: "0 2px 12px #0001",
+          letterSpacing: "0.5px",
+          transition: "background 0.2s",
+        }}
+        onClick={() => {
+          setAutoMode(true);
+          setManualMode(false);
+          setShowStartScreen(false);
+          setAutoRunning(true);
+          setAutoCancelled(false);
+          setHistory([]);
+          setError("");
+          setHistory((prevHistory) => {
+            if (prevHistory.length === 0) {
+              const randIdx = Math.floor(Math.random() * possibleNumbers.length);
+              const num = possibleNumbers[randIdx];
+              const newHistory = [num];
+              speakNumberCustom(newHistory);
+              return newHistory;
             }
-          `}</style>
-        </div>
-      ) : (
+            return prevHistory;
+          });
+        }}
+      >
+        Sortear Automaticamente
+      </button>
+      <style>{`
+        .gn-logo-container {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 100%;
+          margin-bottom: 18px;
+        }
+        .gn-logo-img {
+          width: 100px;
+          height: 100px;
+          object-fit: contain;
+          display: block;
+        }
+        @media (min-width: 1200px) {
+          .gn-main-section .gn-logo-container {
+            margin-bottom: 24px;
+          }
+          .gn-logo-img {
+            width: 120px;
+            height: 120px;
+          }
+          .gn-start-buttons {
+            flex-direction: row !important;
+            justify-content: center;
+            align-items: stretch;
+            gap: 40px;
+            margin: 54px 0 48px 0;
+          }
+          .gn-start-btn {
+            width: 320px !important;
+            max-width: 100%;
+          }
+        }
+      `}</style>
+    </div>
+  ) : (
           <>
             {/* INPUTS E BOTÕES - só exibe se não foi cancelado o sorteio automático */}
             {!autoCancelled ? (
