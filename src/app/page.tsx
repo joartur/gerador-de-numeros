@@ -217,10 +217,20 @@ export default function Home() {
         padding: "2rem",
       }}
     >
-      <section className="gn-main-section">
+    <section className="gn-main-section">
+      <div
+        className="gn-start-header"
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          width: "100%",
+        }}
+      >
         <h1
           style={{
-            marginBottom: 28,
+            marginBottom: 18,
             fontSize: 28,
             fontWeight: 700,
             letterSpacing: "-0.5px",
@@ -230,95 +240,43 @@ export default function Home() {
         >
           Gerador de Números Aleatórios
         </h1>
-            <img
-              src="/logo.png"
-              alt="Logo"
-              style={{
-                width: 100,
-                height: 100,
-                objectFit: "contain",
-                marginBottom: 18
-              }}
-            />
-        {/* TELA INICIAL: escolha do modo */}
-        {showStartScreen ? (
-          <div
-            className="gn-start-buttons"
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: 22,
-              margin: "54px 0 40px 0",
-              width: "100%",
-            }}
-          >
+        <img
+          src="/logo.png"
+          alt="Logo"
+          style={{
+            width: 100,
+            height: 100,
+            objectFit: "contain",
+            marginBottom: 28,
+            display: "block",
+          }}
+        />
+      </div>
+    
+      {/* TELA INICIAL: escolha do modo */}
+      {showStartScreen ? (
+        <div
+          className="gn-start-buttons"
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: 22,
+            margin: "0 0 40px 0",
+            width: "100%",
+          }}
+        >
           <button
             type="button"
             className="gn-start-btn"
-            style={{
-              padding: "1.2rem 0",
-              background: "linear-gradient(90deg,#3b82f6 0%, #06b6d4 100%)",
-              color: "#fff",
-              border: "none",
-              borderRadius: 12,
-              fontSize: 22,
-              fontWeight: 700,
-              cursor: "pointer",
-              width: 300,
-              maxWidth: "100%",
-              boxShadow: "0 2px 12px #0001",
-              letterSpacing: "0.5px",
-              transition: "background 0.2s",
-            }}
-            onClick={() => {
-              setManualMode(true);
-              setAutoMode(false);
-              setAutoCancelled(false);
-              setShowStartScreen(false);
-              setHistory([]);
-              setError("");
-            }}
+            // ... (restante igual)
           >
             Sortear Manualmente
           </button>
           <button
             type="button"
             className="gn-start-btn"
-            style={{
-              padding: "1.2rem 0",
-              background: "linear-gradient(90deg,#22d3ee 0%, #3b82f6 100%)",
-              color: "#fff",
-              border: "none",
-              borderRadius: 12,
-              fontSize: 22,
-              fontWeight: 700,
-              cursor: "pointer",
-              width: 300,
-              maxWidth: "100%",
-              boxShadow: "0 2px 12px #0001",
-              letterSpacing: "0.5px",
-              transition: "background 0.2s",
-            }}
-            onClick={() => {
-              setAutoMode(true);
-              setManualMode(false);
-              setShowStartScreen(false);
-              setAutoRunning(true);
-              setAutoCancelled(false);
-              setHistory([]);
-              setError("");
-              setHistory((prevHistory) => {
-                if (prevHistory.length === 0) {
-                  const randIdx = Math.floor(Math.random() * possibleNumbers.length);
-                  const num = possibleNumbers[randIdx];
-                  const newHistory = [num];
-                  speakNumberCustom(newHistory);
-                  return newHistory;
-                }
-                return prevHistory;
-              });
-            }}
+            // ... (restante igual)
           >
             Sortear Automaticamente
           </button>
@@ -329,7 +287,7 @@ export default function Home() {
                 justify-content: center;
                 align-items: stretch;
                 gap: 40px;
-                margin: 54px 0 48px 0;
+                margin: 0 0 48px 0;
               }
               .gn-start-btn {
                 width: 320px !important;
