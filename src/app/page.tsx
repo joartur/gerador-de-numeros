@@ -240,6 +240,16 @@ export default function Home() {
             gap: 22,
             margin: "54px 0 40px 0"
           }}>
+            <img
+              src="/logo.png"
+              alt="Logo"
+              style={{
+                width: 100,
+                height: 100,
+                objectFit: "contain",
+                marginBottom: 18
+              }}
+            />
             <button
               type="button"
               style={{
