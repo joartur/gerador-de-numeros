@@ -233,13 +233,17 @@ export default function Home() {
 
         {/* TELA INICIAL: escolha do modo */}
         {showStartScreen ? (
-          <div style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            gap: 22,
-            margin: "54px 0 40px 0"
-          }}>
+          <div
+            className="gn-start-buttons"
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: 22,
+              margin: "54px 0 40px 0",
+              width: "100%",
+            }}
+          >
             <img
               src="/logo.png"
               alt="Logo"
@@ -250,74 +254,92 @@ export default function Home() {
                 marginBottom: 18
               }}
             />
-            <button
-              type="button"
-              style={{
-                padding: "1.2rem 0",
-                background: "linear-gradient(90deg,#3b82f6 0%, #06b6d4 100%)",
-                color: "#fff",
-                border: "none",
-                borderRadius: 12,
-                fontSize: 22,
-                fontWeight: 700,
-                cursor: "pointer",
-                width: 300,
-                maxWidth: "100%",
-                boxShadow: "0 2px 12px #0001",
-                letterSpacing: "0.5px"
-              }}
-              onClick={() => {
-                setManualMode(true);
-                setAutoMode(false);
-                setAutoCancelled(false);
-                setShowStartScreen(false);
-                setHistory([]);
-                setError("");
-              }}
-            >
-              Sortear Manualmente
-            </button>
-            <button
-              type="button"
-              style={{
-                padding: "1.2rem 0",
-                background: "linear-gradient(90deg,#22d3ee 0%, #3b82f6 100%)",
-                color: "#fff",
-                border: "none",
-                borderRadius: 12,
-                fontSize: 22,
-                fontWeight: 700,
-                cursor: "pointer",
-                width: 300,
-                maxWidth: "100%",
-                boxShadow: "0 2px 12px #0001",
-                letterSpacing: "0.5px"
-              }}
-              onClick={() => {
-                setAutoMode(true);
-                setManualMode(false);
-                setShowStartScreen(false);
-                setAutoRunning(true);
-                setAutoCancelled(false);
-                setHistory([]);
-                setError("");
-                // Sorteia imediatamente o primeiro número se não houver histórico
-                setHistory((prevHistory) => {
-                  if (prevHistory.length === 0) {
-                    const randIdx = Math.floor(Math.random() * possibleNumbers.length);
-                    const num = possibleNumbers[randIdx];
-                    const newHistory = [num];
-                    speakNumberCustom(newHistory);
-                    return newHistory;
-                  }
-                  return prevHistory;
-                });
-              }}
-            >
-              Sortear Automaticamente
-            </button>
-          </div>
-        ) : (
+    <button
+      type="button"
+      className="gn-start-btn"
+      style={{
+        padding: "1.2rem 0",
+        background: "linear-gradient(90deg,#3b82f6 0%, #06b6d4 100%)",
+        color: "#fff",
+        border: "none",
+        borderRadius: 12,
+        fontSize: 22,
+        fontWeight: 700,
+        cursor: "pointer",
+        width: 300,
+        maxWidth: "100%",
+        boxShadow: "0 2px 12px #0001",
+        letterSpacing: "0.5px",
+        transition: "background 0.2s",
+      }}
+      onClick={() => {
+        setManualMode(true);
+        setAutoMode(false);
+        setAutoCancelled(false);
+        setShowStartScreen(false);
+        setHistory([]);
+        setError("");
+      }}
+    >
+      Sortear Manualmente
+    </button>
+    <button
+      type="button"
+      className="gn-start-btn"
+      style={{
+        padding: "1.2rem 0",
+        background: "linear-gradient(90deg,#22d3ee 0%, #3b82f6 100%)",
+        color: "#fff",
+        border: "none",
+        borderRadius: 12,
+        fontSize: 22,
+        fontWeight: 700,
+        cursor: "pointer",
+        width: 300,
+        maxWidth: "100%",
+        boxShadow: "0 2px 12px #0001",
+        letterSpacing: "0.5px",
+        transition: "background 0.2s",
+      }}
+      onClick={() => {
+        setAutoMode(true);
+        setManualMode(false);
+        setShowStartScreen(false);
+        setAutoRunning(true);
+        setAutoCancelled(false);
+        setHistory([]);
+        setError("");
+        setHistory((prevHistory) => {
+          if (prevHistory.length === 0) {
+            const randIdx = Math.floor(Math.random() * possibleNumbers.length);
+            const num = possibleNumbers[randIdx];
+            const newHistory = [num];
+            speakNumberCustom(newHistory);
+            return newHistory;
+          }
+          return prevHistory;
+        });
+      }}
+    >
+      Sortear Automaticamente
+    </button>
+    <style>{`
+      @media (min-width: 1200px) {
+        .gn-start-buttons {
+          flex-direction: row !important;
+          justify-content: center;
+          align-items: stretch;
+          gap: 40px;
+          margin: 54px 0 48px 0;
+        }
+        .gn-start-btn {
+          width: 320px !important;
+          max-width: 100%;
+        }
+      }
+    `}</style>
+  </div>
+) : (
           <>
             {/* INPUTS E BOTÕES - só exibe se não foi cancelado o sorteio automático */}
             {!autoCancelled ? (
