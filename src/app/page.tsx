@@ -1,10 +1,16 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
+import Logo from "./components/Logo";
+import StartButtons from "./components/StartButtons";
+import NumberInputs from "./components/NumberInputs";
+import AutoControls from "./components/AutoControls";
+import LastNumber from "./components/LastNumber";
+import SortedGrid from "./components/SortedGrid";
+import StatusTexts from "./components/StatusTexts";
+import BackToStart from "./components/BackToStart";
 
 export default function Home() {
-  // Novo estado para tela inicial
   const [showStartScreen, setShowStartScreen] = useState(true);
-
   const [min, setMin] = useState<number>(1);
   const [max, setMax] = useState<number>(10);
   const [history, setHistory] = useState<number[]>([]);
@@ -18,7 +24,6 @@ export default function Home() {
   const [manualMode, setManualMode] = useState<boolean>(false);
   const autoInterval = useRef<NodeJS.Timeout | null>(null);
 
-  // Função de áudio customizada conforme requisitos
   function speakNumberCustom(historyArr: number[]) {
     if (typeof window !== "undefined" && "speechSynthesis" in window && historyArr.length > 0) {
       let text = "";
@@ -27,7 +32,6 @@ export default function Home() {
       } else {
         text = `Número sorteado foi ${historyArr[0]}`;
       }
-      // A cada 10 números sorteados (exceto o primeiro), avisa a quantidade de dezenas
       if (historyArr.length > 0 && historyArr.length % 10 === 0) {
         const dezenas = historyArr.length / 10;
         text += `. Foram sortados ${dezenas} ${dezenas === 1 ? "dezena" : "dezenas"}`;
@@ -38,7 +42,6 @@ export default function Home() {
     }
   }
 
-  // Atualiza o min/max somente ao clicar fora ou pressionar Enter
   function handleBlurMin() {
     const value = parseInt(inputMin, 10);
     if (!isNaN(value)) {
@@ -76,13 +79,11 @@ export default function Home() {
     }
   }
 
-  // Gera os possíveis números ainda não sorteados
   const possibleNumbers = Array.from(
     { length: max - min + 1 },
     (_, i) => min + i
   ).filter((n) => !history.includes(n));
 
-  // Sorteia um novo número não repetido
   function handleGenerate() {
     setError("");
     setManualMode(true);
@@ -98,15 +99,12 @@ export default function Home() {
     speakNumberCustom(newHistory);
   }
 
-  // Sorteio automático: começa já exibindo o primeiro número!
   function handleAutoStart() {
     if (min > max || possibleNumbers.length === 0) return;
     setAutoMode(true);
     setManualMode(false);
     setAutoRunning(true);
     setAutoCancelled(false);
-
-    // Sorteia imediatamente o primeiro número se não houver histórico ainda
     setHistory((prevHistory) => {
       if (prevHistory.length === 0) {
         const randIdx = Math.floor(Math.random() * possibleNumbers.length);
@@ -126,7 +124,6 @@ export default function Home() {
     }
   }
 
-  // Efeito para controlar o sorteio automático
   useEffect(() => {
     if (
       autoMode &&
@@ -152,38 +149,31 @@ export default function Home() {
             speakNumberCustom(newHistory);
             return newHistory;
           });
-        }, 20000); // 20 segundos
+        }, 20000);
       }
     } else {
       clearAutoInterval();
     }
-    // Limpa o intervalo ao desmontar
     return () => clearAutoInterval();
-    // eslint-disable-next-line
   }, [autoMode, autoRunning, autoCancelled, min, max]);
 
-  // Quando terminar todos os números, encerra o sorteio automático
   useEffect(() => {
     if (autoMode && possibleNumbers.length === 0 && autoRunning) {
       setAutoRunning(false);
       clearAutoInterval();
     }
-    // eslint-disable-next-line
   }, [history]);
 
-  // Parar completamente o sorteio automático
   function handleAutoStop() {
     setAutoRunning(false);
     setAutoCancelled(true);
     clearAutoInterval();
   }
 
-  // Pausar/reiniciar
   function handleAutoPauseResume() {
     setAutoRunning((v) => !v);
   }
 
-  // Voltar ao início (reset para tela de escolha)
   function handleBackToStart() {
     setShowStartScreen(true);
     setAutoMode(false);
@@ -200,10 +190,6 @@ export default function Home() {
   const remainingCount = totalNumbers - sortedCount;
   const allSorted = sortedCount === totalNumbers && sortedCount > 0;
 
-  // Ordena os números sorteados (exceto o último) em ordem crescente
-  const sortedRestHistory = history.slice(1).sort((a, b) => a - b);
-
-  // Renderização principal
   return (
     <main
       style={{
@@ -217,499 +203,89 @@ export default function Home() {
         padding: "2rem",
       }}
     >
-<section className="gn-main-section">
-  <h1
-    style={{
-      marginBottom: 28,
-      fontSize: 28,
-      fontWeight: 700,
-      letterSpacing: "-0.5px",
-      color: "#244466",
-      textAlign: "center",
-    }}
-  >
-    Gerador de Números Aleatórios
-  </h1>
-  <div className="gn-logo-container">
-    <img
-      src="/logo.png"
-      alt="Logo"
-      className="gn-logo-img"
-    />
-  </div>
-  {/* TELA INICIAL: escolha do modo */}
-  {showStartScreen ? (
-    <div
-      className="gn-start-buttons"
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        gap: 22,
-        margin: "54px 0 40px 0",
-        width: "100%",
-      }}
-    >
-      <button
-        type="button"
-        className="gn-start-btn"
-        style={{
-          padding: "1.2rem 0",
-          background: "linear-gradient(90deg,#3b82f6 0%, #06b6d4 100%)",
-          color: "#fff",
-          border: "none",
-          borderRadius: 12,
-          fontSize: 22,
-          fontWeight: 700,
-          cursor: "pointer",
-          width: 300,
-          maxWidth: "100%",
-          boxShadow: "0 2px 12px #0001",
-          letterSpacing: "0.5px",
-          transition: "background 0.2s",
-        }}
-        onClick={() => {
-          setManualMode(true);
-          setAutoMode(false);
-          setAutoCancelled(false);
-          setShowStartScreen(false);
-          setHistory([]);
-          setError("");
-        }}
-      >
-        Sortear Manualmente
-      </button>
-      <button
-        type="button"
-        className="gn-start-btn"
-        style={{
-          padding: "1.2rem 0",
-          background: "linear-gradient(90deg,#22d3ee 0%, #3b82f6 100%)",
-          color: "#fff",
-          border: "none",
-          borderRadius: 12,
-          fontSize: 22,
-          fontWeight: 700,
-          cursor: "pointer",
-          width: 300,
-          maxWidth: "100%",
-          boxShadow: "0 2px 12px #0001",
-          letterSpacing: "0.5px",
-          transition: "background 0.2s",
-        }}
-        onClick={() => {
-          setAutoMode(true);
-          setManualMode(false);
-          setShowStartScreen(false);
-          setAutoRunning(true);
-          setAutoCancelled(false);
-          setHistory([]);
-          setError("");
-          setHistory((prevHistory) => {
-            if (prevHistory.length === 0) {
-              const randIdx = Math.floor(Math.random() * possibleNumbers.length);
-              const num = possibleNumbers[randIdx];
-              const newHistory = [num];
-              speakNumberCustom(newHistory);
-              return newHistory;
-            }
-            return prevHistory;
-          });
-        }}
-      >
-        Sortear Automaticamente
-      </button>
-      <style>{`
-        .gn-logo-container {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          width: 100%;
-          margin-bottom: 18px;
-        }
-        .gn-logo-img {
-          width: 100px;
-          height: 100px;
-          object-fit: contain;
-          display: block;
-        }
-        @media (min-width: 1200px) {
-          .gn-main-section .gn-logo-container {
-            margin-bottom: 24px;
-          }
-          .gn-logo-img {
-            width: 120px;
-            height: 120px;
-          }
-          .gn-start-buttons {
-            flex-direction: row !important;
-            justify-content: center;
-            align-items: stretch;
-            gap: 40px;
-            margin: 54px 0 48px 0;
-          }
-          .gn-start-btn {
-            width: 320px !important;
-            max-width: 100%;
-          }
-        }
-      `}</style>
-    </div>
-  ) : (
+      <section className="gn-main-section">
+        <h1
+          style={{
+            marginBottom: 28,
+            fontSize: 28,
+            fontWeight: 700,
+            letterSpacing: "-0.5px",
+            color: "#244466",
+            textAlign: "center",
+          }}
+        >
+          Gerador de Números Aleatórios
+        </h1>
+        <Logo />
+        {showStartScreen ? (
+          <StartButtons
+            onManual={() => {
+              setManualMode(true);
+              setAutoMode(false);
+              setAutoCancelled(false);
+              setShowStartScreen(false);
+              setHistory([]);
+              setError("");
+            }}
+            onAuto={() => {
+              setAutoMode(true);
+              setManualMode(false);
+              setShowStartScreen(false);
+              setAutoRunning(true);
+              setAutoCancelled(false);
+              setHistory([]);
+              setError("");
+              setHistory((prevHistory) => {
+                if (prevHistory.length === 0) {
+                  const randIdx = Math.floor(Math.random() * possibleNumbers.length);
+                  const num = possibleNumbers[randIdx];
+                  const newHistory = [num];
+                  speakNumberCustom(newHistory);
+                  return newHistory;
+                }
+                return prevHistory;
+              });
+            }}
+          />
+        ) : (
           <>
-            {/* INPUTS E BOTÕES - só exibe se não foi cancelado o sorteio automático */}
             {!autoCancelled ? (
-              <>
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    handleGenerate();
-                  }}
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 16,
-                    marginBottom: 18,
-                  }}
-                >
-                  <div style={{ display: "flex", gap: 12 }}>
-                    <div style={{ flex: 1 }}>
-                      <label
-                        htmlFor="min"
-                        style={{
-                          fontSize: 13,
-                          color: "#244466",
-                          fontWeight: 500,
-                        }}
-                      >
-                        De
-                      </label>
-                      <input
-                        id="min"
-                        type="number"
-                        value={inputMin}
-                        min={-99999}
-                        max={max}
-                        onChange={e => setInputMin(e.target.value)}
-                        onBlur={handleBlurMin}
-                        onKeyDown={handleKeyDownMin}
-                        style={{
-                          marginTop: 4,
-                          width: "100%",
-                          padding: "0.5rem",
-                          border: "1px solid #dde6f1",
-                          borderRadius: 6,
-                          fontSize: 16,
-                          boxShadow: "0 1px 2px #0001",
-                          outline: "none",
-                          transition: "border 0.2s",
-                        }}
-                        disabled={autoMode}
-                      />
-                    </div>
-                    <div style={{ flex: 1 }}>
-                      <label
-                        htmlFor="max"
-                        style={{
-                          fontSize: 13,
-                          color: "#244466",
-                          fontWeight: 500,
-                        }}
-                      >
-                        Até
-                      </label>
-                      <input
-                        id="max"
-                        type="number"
-                        value={inputMax}
-                        min={min}
-                        max={99999}
-                        onChange={e => setInputMax(e.target.value)}
-                        onBlur={handleBlurMax}
-                        onKeyDown={handleKeyDownMax}
-                        style={{
-                          marginTop: 4,
-                          width: "100%",
-                          padding: "0.5rem",
-                          border: "1px solid #dde6f1",
-                          borderRadius: 6,
-                          fontSize: 16,
-                          boxShadow: "0 1px 2px #0001",
-                          outline: "none",
-                          transition: "border 0.2s",
-                        }}
-                        disabled={autoMode}
-                      />
-                    </div>
-                  </div>
-                  <div className="gn-buttons-row">
-                    <button
-                      type="submit"
-                      disabled={min > max || allSorted || totalNumbers <= 0 || autoMode}
-                      onClick={() => setManualMode(true)}
-                      style={{
-                        marginTop: 10,
-                        padding: "0.7rem 0",
-                        background:
-                          min > max || allSorted || totalNumbers <= 0 || autoMode
-                            ? "#cccccc"
-                            : "linear-gradient(90deg,#3b82f6 0%, #06b6d4 100%)",
-                        color: "#fff",
-                        border: "none",
-                        borderRadius: 8,
-                        fontSize: 18,
-                        fontWeight: 600,
-                        cursor: min > max || allSorted || totalNumbers <= 0 || autoMode ? "not-allowed" : "pointer",
-                        boxShadow: "0 2px 8px #0002",
-                        transition: "background 0.2s",
-                        letterSpacing: "0.5px",
-                        width: "100%",
-                      }}
-                    >
-                      Sortear
-                    </button>
-
-                    {/* Botão Sortear Automaticamente (oculto em modo manual) */}
-                    {!manualMode && (
-                      <button
-                        type="button"
-                        onClick={handleAutoStart}
-                        disabled={
-                          min > max ||
-                          allSorted ||
-                          totalNumbers <= 0 ||
-                          autoMode
-                        }
-                        style={{
-                          marginTop: 10,
-                          padding: "0.7rem 0",
-                          background:
-                            min > max ||
-                            allSorted ||
-                            totalNumbers <= 0 ||
-                            autoMode
-                              ? "#cccccc"
-                              : "linear-gradient(90deg,#22d3ee 0%, #3b82f6 100%)",
-                          color: "#fff",
-                          border: "none",
-                          borderRadius: 8,
-                          fontSize: 18,
-                          fontWeight: 600,
-                          cursor:
-                            min > max ||
-                            allSorted ||
-                            totalNumbers <= 0 ||
-                            autoMode
-                              ? "not-allowed"
-                              : "pointer",
-                          boxShadow: "0 2px 8px #0002",
-                          transition: "background 0.2s",
-                          letterSpacing: "0.5px",
-                          width: "100%",
-                        }}
-                      >
-                        Sortear Automaticamente
-                      </button>
-                    )}
-                  </div>
-                  {error && (
-                    <span
-                      style={{
-                        color: "#ef4444",
-                        fontSize: 14,
-                        textAlign: "center",
-                        marginTop: 4,
-                      }}
-                    >
-                      {error}
-                    </span>
-                  )}
-                </form>
-              </>
+              <NumberInputs
+                min={min}
+                max={max}
+                inputMin={inputMin}
+                inputMax={inputMax}
+                onChangeMin={setInputMin}
+                onChangeMax={setInputMax}
+                onBlurMin={handleBlurMin}
+                onBlurMax={handleBlurMax}
+                onKeyDownMin={handleKeyDownMin}
+                onKeyDownMax={handleKeyDownMax}
+                autoMode={autoMode}
+                onGenerate={handleGenerate}
+                manualMode={manualMode}
+                onAutoStart={handleAutoStart}
+                error={error}
+                disabled={min > max || allSorted || totalNumbers <= 0 || autoMode}
+                allSorted={allSorted}
+                totalNumbers={totalNumbers}
+              />
             ) : null}
-
-            {/* CONTROLES DO SORTEIO AUTOMÁTICO */}
             {autoMode && (
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  gap: 14,
-                  margin: "16px 0",
-                }}
-              >
-                <button
-                  type="button"
-                  onClick={handleAutoPauseResume}
-                  style={{
-                    padding: "0.5rem 1.2rem",
-                    background: autoRunning
-                      ? "linear-gradient(90deg,#f59e42 0%, #fb7185 100%)"
-                      : "linear-gradient(90deg,#22c55e 0%, #3b82f6 100%)",
-                    color: "#fff",
-                    border: "none",
-                    borderRadius: 8,
-                    fontSize: 16,
-                    fontWeight: 600,
-                    cursor: "pointer",
-                    boxShadow: "0 2px 8px #0002",
-                    transition: "background 0.2s",
-                    letterSpacing: "0.3px",
-                  }}
-                >
-                  {autoRunning ? "Pausar" : "Retomar"}
-                </button>
-                <button
-                  type="button"
-                  onClick={handleAutoStop}
-                  style={{
-                    padding: "0.5rem 1.2rem",
-                    background:
-                      "linear-gradient(90deg,#ef4444 0%, #f59e42 100%)",
-                    color: "#fff",
-                    border: "none",
-                    borderRadius: 8,
-                    fontSize: 16,
-                    fontWeight: 600,
-                    cursor: "pointer",
-                    boxShadow: "0 2px 8px #0002",
-                    transition: "background 0.2s",
-                    letterSpacing: "0.3px",
-                  }}
-                >
-                  Parar
-                </button>
-              </div>
+              <AutoControls
+                autoRunning={autoRunning}
+                onPauseResume={handleAutoPauseResume}
+                onStop={handleAutoStop}
+              />
             )}
-
-            {/* Último número sorteado em destaque */}
-            {history.length > 0 && (
-              <div style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                marginBottom: 10,
-                animation: "fadeIn 0.6s"
-              }}>
-                <span style={{
-                  fontSize: 15,
-                  color: "#00aaff",
-                  fontWeight: 600,
-                  letterSpacing: "0.2px",
-                  marginBottom: 4,
-                }}>
-                  Último número sorteado
-                </span>
-                <div style={{
-                  background: "linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%)",
-                  color: "#fff",
-                  borderRadius: 16,
-                  boxShadow: "0 2px 14px #0001",
-                  padding: "1.4rem 0",
-                  width: 120,
-                  fontSize: 42,
-                  fontWeight: 900,
-                  textAlign: "center",
-                  marginBottom: 2,
-                  marginTop: 2,
-                  letterSpacing: "2px",
-                  transition: "all 0.2s",
-                  animation: "popIn 0.3s",
-                }}>
-                  {history[0]}
-                </div>
-              </div>
-            )}
-
-            {/* Novo título "Foram sorteados (n) números" */}
-            <h2
-              style={{
-                fontSize: 18,
-                fontWeight: 500,
-                margin: "8px 0 12px 0",
-                color: "#244466",
-                textAlign: "center",
-                letterSpacing: "0.1px",
-              }}
-            >
-              Foram sorteados {sortedCount} {sortedCount === 1 ? "número" : "números"}
-            </h2>
-
-            {/* Grid dos demais números (ordenados) */}
-            <div
-              className="gn-grid"
-              style={{
-                minHeight: 56,
-                maxHeight: 220,
-                overflowY: "auto",
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(60px, 1fr))",
-                gap: 10,
-                margin: "0 auto",
-                width: "100%",
-              }}
-            >
-              {history.length <= 1 && (
-                <span
-                  style={{
-                    color: "#8796ac",
-                    fontSize: 15,
-                    gridColumn: "1/-1",
-                    textAlign: "center",
-                  }}
-                >
-                  Nenhum número anterior sorteado.
-                </span>
-              )}
-              {sortedRestHistory.map((num, idx) => (
-                <div
-                  key={idx}
-                  style={{
-                    background: "#f1f7ff",
-                    color: "#244466",
-                    borderRadius: 8,
-                    boxShadow: "0 1px 4px #0001",
-                    padding: "0.7rem 0",
-                    fontSize: 20,
-                    fontWeight: 700,
-                    textAlign: "center",
-                    animation: "fadeIn 0.4s",
-                  }}
-                >
-                  {num}
-                </div>
-              ))}
-            </div>
-            {/* Mensagem se todos foram sorteados */}
-            {allSorted && (
-              <div style={{
-                marginTop: 22,
-                color: "#10b981",
-                fontWeight: 600,
-                textAlign: "center",
-                fontSize: 18,
-                letterSpacing: "0.3px",
-              }}>
-                Todos os números já foram sorteados
-              </div>
-            )}
-
-            {/* Faltam (n) números */}
-            {totalNumbers > 0 && !allSorted && (
-              <div style={{
-                marginTop: 18,
-                color: "#244466",
-                fontWeight: 500,
-                textAlign: "center",
-                fontSize: 16,
-                letterSpacing: "0.1px",
-              }}>
-                Faltam {remainingCount} {remainingCount === 1 ? "número" : "números"} serem sorteados
-              </div>
-            )}
-
-            {/* Sorteio automático cancelado */}
+            <LastNumber number={history[0]} />
+            <StatusTexts
+              sortedCount={sortedCount}
+              allSorted={allSorted}
+              totalNumbers={totalNumbers}
+              remainingCount={remainingCount}
+            />
+            <SortedGrid history={history} />
             {autoCancelled && (
               <div style={{ marginTop: 30, textAlign: "center" }}>
                 <div style={{
@@ -738,31 +314,10 @@ export default function Home() {
                 </a>
               </div>
             )}
-
-            {/* Botão voltar para tela inicial */}
-            <div style={{ marginTop: 36, textAlign: "center" }}>
-              <button
-                type="button"
-                onClick={handleBackToStart}
-                style={{
-                  background: "none",
-                  border: "none",
-                  color: "#3b82f6",
-                  fontWeight: 700,
-                  fontSize: 16,
-                  textDecoration: "underline",
-                  cursor: "pointer",
-                  padding: 0,
-                  margin: 0
-                }}
-              >
-                Voltar para o início
-              </button>
-            </div>
+            <BackToStart onBack={handleBackToStart} />
           </>
         )}
       </section>
-      {/* CSS Animation Keyframes e responsividade */}
       <style>{`
         @keyframes fadeIn {
           from { opacity: 0; transform: translateY(10px);}
