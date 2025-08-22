@@ -91,10 +91,7 @@ export default function Home() {
   }
 
   // --- Lógica do Automático ---
-  const possibleNumbersAuto = Array.from(
-    { length: maxAuto - minAuto + 1 },
-    (_, i) => minAuto + i
-  ).filter((n) => !historyAuto.includes(n));
+  // REMOVIDO: const possibleNumbersAuto = ... (não era utilizado)
 
   function handleAutoStart() {
     setErrorAuto("");
@@ -205,8 +202,8 @@ export default function Home() {
               error={errorManual}
               onGenerate={handleManualGenerate}
               allSorted={historyManual.length === maxManual - minManual + 1 && historyManual.length > 0}
-              totalNumbers={maxManual - minManual + 1 > 0 ? maxManual - minManual + 1 : 0}
               sortedCount={historyManual.length}
+              totalNumbers={maxManual - minManual + 1 > 0 ? maxManual - minManual + 1 : 0}
               remainingCount={Math.max(0, (maxManual - minManual + 1) - historyManual.length)}
             />
             <BackToStart onBack={() => setMode("start")} />
@@ -247,8 +244,8 @@ export default function Home() {
               onPauseResume={handleAutoPauseResume}
               onStop={handleAutoStop}
               allSorted={historyAuto.length === Number(inputTotalAuto) && historyAuto.length > 0}
-              totalNumbers={maxAuto - minAuto + 1 > 0 ? maxAuto - minAuto + 1 : 0}
               sortedCount={historyAuto.length}
+              totalNumbers={maxAuto - minAuto + 1 > 0 ? maxAuto - minAuto + 1 : 0}
               remainingCount={Math.max(0, Number(inputTotalAuto) - historyAuto.length)}
               inputTotal={inputTotalAuto}
               onChangeTotal={setInputTotalAuto}
