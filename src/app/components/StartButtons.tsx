@@ -58,7 +58,7 @@ export default function StartButtons({ onManual, onAuto }: StartButtonsProps) {
         }}
         onClick={onAuto}
       >
-        Sortear Automaticamente
+        Sorteio Automático
       </button>
       <style>{`
         @media (min-width: 1200px) {

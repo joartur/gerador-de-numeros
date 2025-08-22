@@ -1,4 +1,3 @@
-import { useRef, useEffect } from "react";
 import LastNumber from "./LastNumber";
 import SortedGrid from "./SortedGrid";
 import StatusTexts from "./StatusTexts";
@@ -8,8 +7,10 @@ interface AutoDrawProps {
   max: number;
   inputMin: string;
   inputMax: string;
+  inputTotal: string;
   onChangeMin: (v: string) => void;
   onChangeMax: (v: string) => void;
+  onChangeTotal: (v: string) => void;
   onBlurMin: () => void;
   onBlurMax: () => void;
   onKeyDownMin: (e: React.KeyboardEvent<HTMLInputElement>) => void;
@@ -17,6 +18,7 @@ interface AutoDrawProps {
   history: number[];
   error: string;
   autoRunning: boolean;
+  autoPaused: boolean;
   onStart: () => void;
   onPauseResume: () => void;
   onStop: () => void;
@@ -24,15 +26,14 @@ interface AutoDrawProps {
   totalNumbers: number;
   sortedCount: number;
   remainingCount: number;
-  inputTotal: string;
-  onChangeTotal: (v: string) => void;
 }
 
 export default function AutoDraw(props: AutoDrawProps) {
   const {
-    min, max, inputMin, inputMax, onChangeMin, onChangeMax, onBlurMin, onBlurMax,
-    onKeyDownMin, onKeyDownMax, history, error, autoRunning, onStart, onPauseResume,
-    onStop, allSorted, totalNumbers, sortedCount, remainingCount, inputTotal, onChangeTotal
+    min, max, inputMin, inputMax, inputTotal,
+    onChangeMin, onChangeMax, onChangeTotal, onBlurMin, onBlurMax,
+    onKeyDownMin, onKeyDownMax, history, error, autoRunning, autoPaused,
+    onStart, onPauseResume, onStop, allSorted, totalNumbers, sortedCount, remainingCount
   } = props;
 
   return (
@@ -185,7 +186,9 @@ export default function AutoDraw(props: AutoDrawProps) {
             onClick={onPauseResume}
             style={{
               padding: "0.5rem 1.2rem",
-              background: "linear-gradient(90deg,#f59e42 0%, #fb7185 100%)",
+              background: autoPaused
+                ? "linear-gradient(90deg,#22c55e 0%, #3b82f6 100%)"
+                : "linear-gradient(90deg,#f59e42 0%, #fb7185 100%)",
               color: "#fff",
               border: "none",
               borderRadius: 8,
@@ -197,7 +200,7 @@ export default function AutoDraw(props: AutoDrawProps) {
               letterSpacing: "0.3px",
             }}
           >
-            Pausar
+            {autoPaused ? "Retomar" : "Pausar"}
           </button>
           <button
             type="button"
