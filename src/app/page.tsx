@@ -7,7 +7,6 @@ import AutoDraw from "./components/AutoDraw";
 import BackToStart from "./components/BackToStart";
 
 export default function Home() {
-  // Estados independentes para cada modo
   const [mode, setMode] = useState<"start"|"manual"|"auto">("start");
 
   // Manual
@@ -30,7 +29,6 @@ export default function Home() {
   const [autoPaused, setAutoPaused] = useState<boolean>(false);
   const autoInterval = useRef<NodeJS.Timeout | null>(null);
 
-  // Função de áudio
   function speakNumberCustom(historyArr: number[]) {
     if (typeof window !== "undefined" && "speechSynthesis" in window && historyArr.length > 0) {
       let text = "";
@@ -123,7 +121,6 @@ export default function Home() {
     setHistoryAuto([]);
   }
 
-  // Efeito do sorteio automático
   useEffect(() => {
     if (autoRunning && !autoPaused && historyAuto.length < Number(inputTotalAuto)) {
       if (!autoInterval.current) {
@@ -222,10 +219,8 @@ export default function Home() {
               max={maxAuto}
               inputMin={inputMinAuto}
               inputMax={inputMaxAuto}
-              inputTotal={inputTotalAuto}
               onChangeMin={setInputMinAuto}
               onChangeMax={setInputMaxAuto}
-              onChangeTotal={setInputTotalAuto}
               onBlurMin={() => {
                 const value = parseInt(inputMinAuto, 10);
                 if (!isNaN(value)) {
@@ -255,6 +250,8 @@ export default function Home() {
               totalNumbers={maxAuto - minAuto + 1 > 0 ? maxAuto - minAuto + 1 : 0}
               sortedCount={historyAuto.length}
               remainingCount={Math.max(0, Number(inputTotalAuto) - historyAuto.length)}
+              inputTotal={inputTotalAuto}
+              onChangeTotal={setInputTotalAuto}
             />
             <BackToStart onBack={() => setMode("start")} />
           </>
