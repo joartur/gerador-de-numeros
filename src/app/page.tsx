@@ -174,6 +174,7 @@ export default function Home() {
         padding: "2rem",
       }}
     >
+      <Logo />
       <section className="gn-main-section">
         <h1 style={{
           marginBottom: 28,
@@ -185,7 +186,6 @@ export default function Home() {
         }}>
           Gerador de Números Aleatórios
         </h1>
-        <Logo />
         {mode === "start" && (
           <StartButtons
             onManual={() => setMode("manual")}
