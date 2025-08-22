@@ -127,7 +127,7 @@ export default function AutoDraw(props: AutoDrawProps) {
             width: "100%",
           }}
         >
-          Iniciar Sorteio Automático
+          Iniciar Sorteio
         </button>
         {error && (
           <span
