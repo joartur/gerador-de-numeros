@@ -28,7 +28,7 @@ export default function Logo() {
         }
         @media (min-width: 1200px) {
           .gn-logo-container {
-            margin-bottom: 24px;
+            margin-bottom: 3px;
           }
           .gn-logo-img {
             width: 100px;
