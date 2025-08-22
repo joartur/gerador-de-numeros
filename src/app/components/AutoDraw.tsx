@@ -24,20 +24,18 @@ interface AutoDrawProps {
   totalNumbers: number;
   sortedCount: number;
   remainingCount: number;
-  inputTotal: string;
-  onChangeTotal: (v: string) => void;
 }
 
 export default function AutoDraw(props: AutoDrawProps) {
   const {
     min, max, inputMin, inputMax, onChangeMin, onChangeMax, onBlurMin, onBlurMax,
     onKeyDownMin, onKeyDownMax, history, error, autoRunning, autoPaused, onStart, onPauseResume,
-    onStop, allSorted, totalNumbers, sortedCount, remainingCount, inputTotal, onChangeTotal
+    onStop, allSorted, totalNumbers, sortedCount, remainingCount
   } = props;
 
   return (
     <>
-      {/* Inputs para range e quantidade desejada */}
+      {/* Inputs para range */}
       <form
         onSubmit={e => {
           e.preventDefault();
@@ -106,39 +104,14 @@ export default function AutoDraw(props: AutoDrawProps) {
             />
           </div>
         </div>
-        <div style={{ flex: 1 }}>
-          <label htmlFor="total-auto" style={{ fontSize: 13, color: "#244466", fontWeight: 500 }}>
-            Quantidade de números a sortear
-          </label>
-          <input
-            id="total-auto"
-            type="number"
-            value={inputTotal}
-            min={1}
-            max={max - min + 1}
-            onChange={e => onChangeTotal(e.target.value)}
-            style={{
-              marginTop: 4,
-              width: "100%",
-              padding: "0.5rem",
-              border: "1px solid #dde6f1",
-              borderRadius: 6,
-              fontSize: 16,
-              boxShadow: "0 1px 2px #0001",
-              outline: "none",
-              transition: "border 0.2s",
-            }}
-            disabled={autoRunning}
-          />
-        </div>
         <button
           type="submit"
-          disabled={autoRunning || min > max || Number(inputTotal) < 1 || Number(inputTotal) > (max - min + 1)}
+          disabled={autoRunning || min > max}
           style={{
             marginTop: 10,
             padding: "0.7rem 0",
             background:
-              autoRunning || min > max || Number(inputTotal) < 1 || Number(inputTotal) > (max - min + 1)
+              autoRunning || min > max
                 ? "#cccccc"
                 : "linear-gradient(90deg,#22d3ee 0%, #3b82f6 100%)",
             color: "#fff",
@@ -146,7 +119,7 @@ export default function AutoDraw(props: AutoDrawProps) {
             borderRadius: 8,
             fontSize: 18,
             fontWeight: 600,
-            cursor: autoRunning || min > max || Number(inputTotal) < 1 || Number(inputTotal) > (max - min + 1)
+            cursor: autoRunning || min > max
               ? "not-allowed" : "pointer",
             boxShadow: "0 2px 8px #0002",
             transition: "background 0.2s",
