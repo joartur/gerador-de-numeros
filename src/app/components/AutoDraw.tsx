@@ -7,10 +7,8 @@ interface AutoDrawProps {
   max: number;
   inputMin: string;
   inputMax: string;
-  inputTotal: string;
   onChangeMin: (v: string) => void;
   onChangeMax: (v: string) => void;
-  onChangeTotal: (v: string) => void;
   onBlurMin: () => void;
   onBlurMax: () => void;
   onKeyDownMin: (e: React.KeyboardEvent<HTMLInputElement>) => void;
@@ -26,14 +24,15 @@ interface AutoDrawProps {
   totalNumbers: number;
   sortedCount: number;
   remainingCount: number;
+  inputTotal: string;
+  onChangeTotal: (v: string) => void;
 }
 
 export default function AutoDraw(props: AutoDrawProps) {
   const {
-    min, max, inputMin, inputMax, inputTotal,
-    onChangeMin, onChangeMax, onChangeTotal, onBlurMin, onBlurMax,
-    onKeyDownMin, onKeyDownMax, history, error, autoRunning, autoPaused,
-    onStart, onPauseResume, onStop, allSorted, totalNumbers, sortedCount, remainingCount
+    min, max, inputMin, inputMax, onChangeMin, onChangeMax, onBlurMin, onBlurMax,
+    onKeyDownMin, onKeyDownMax, history, error, autoRunning, autoPaused, onStart, onPauseResume,
+    onStop, allSorted, totalNumbers, sortedCount, remainingCount, inputTotal, onChangeTotal
   } = props;
 
   return (
@@ -170,7 +169,6 @@ export default function AutoDraw(props: AutoDrawProps) {
           </span>
         )}
       </form>
-      {/* Controls de pausa/parar só aparecem quando está rodando */}
       {autoRunning && (
         <div
           style={{
