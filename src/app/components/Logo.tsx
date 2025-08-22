@@ -6,10 +6,10 @@ export default function Logo() {
       <Image
         src="/logo.png"
         alt="Logo"
+        className="gn-logo-img"
         width={120}
         height={120}
-        className="gn-logo-img"
-        style={{ objectFit: "contain", width: "100px", height: "100px" }}
+        style={{ objectFit: "contain" }}
         priority
       />
       <style>{`
@@ -21,12 +21,18 @@ export default function Logo() {
           margin-bottom: 18px;
         }
         .gn-logo-img {
+          width: 100px;
+          height: 100px;
           object-fit: contain;
           display: block;
         }
         @media (min-width: 1200px) {
           .gn-logo-container {
             margin-bottom: 24px;
+          }
+          .gn-logo-img {
+            width: 120px;
+            height: 120px;
           }
         }
       `}</style>
