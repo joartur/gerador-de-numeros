@@ -222,8 +222,10 @@ export default function Home() {
               max={maxAuto}
               inputMin={inputMinAuto}
               inputMax={inputMaxAuto}
+              inputTotal={inputTotalAuto}
               onChangeMin={setInputMinAuto}
               onChangeMax={setInputMaxAuto}
+              onChangeTotal={setInputTotalAuto}
               onBlurMin={() => {
                 const value = parseInt(inputMinAuto, 10);
                 if (!isNaN(value)) {
@@ -245,6 +247,7 @@ export default function Home() {
               history={historyAuto}
               error={errorAuto}
               autoRunning={autoRunning}
+              autoPaused={autoPaused}
               onStart={handleAutoStart}
               onPauseResume={handleAutoPauseResume}
               onStop={handleAutoStop}
@@ -252,8 +255,6 @@ export default function Home() {
               totalNumbers={maxAuto - minAuto + 1 > 0 ? maxAuto - minAuto + 1 : 0}
               sortedCount={historyAuto.length}
               remainingCount={Math.max(0, Number(inputTotalAuto) - historyAuto.length)}
-              inputTotal={inputTotalAuto}
-              onChangeTotal={setInputTotalAuto}
             />
             <BackToStart onBack={() => setMode("start")} />
           </>
@@ -279,11 +280,26 @@ export default function Home() {
           box-shadow: 0 4px 24px rgba(0,0,0,0.08);
           transition: max-width 0.3s, padding 0.3s;
         }
+        .gn-grid {
+          min-height: 56px;
+          max-height: 220px;
+          overflow-y: auto;
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+          gap: 10px;
+          margin: 0 auto;
+          width: 100%;
+        }
         @media (min-width: 1200px) {
           .gn-main-section {
             max-width: 900px;
             padding: 3.5rem 5rem 3rem 5rem;
             box-shadow: 0 8px 40px rgba(0,0,0,0.13);
+          }
+          .gn-grid {
+            max-height: 400px !important;
+            grid-template-columns: repeat(auto-fit, minmax(70px, 1fr)) !important;
+            gap: 18px !important;
           }
         }
       `}</style>
