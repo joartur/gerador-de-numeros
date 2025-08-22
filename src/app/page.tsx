@@ -95,18 +95,17 @@ export default function Home() {
     (_, i) => minAuto + i
   ).filter((n) => !historyAuto.includes(n));
 
-  // SORTEIA O PRIMEIRO NÚMERO IMEDIATAMENTE QUANDO INICIAR
   function handleAutoStart() {
     setErrorAuto("");
     if (minAuto > maxAuto) {
       setErrorAuto("O valor mínimo deve ser menor ou igual ao máximo.");
       return;
     }
-    // Sorteia o primeiro número imediatamente
-    const randIdx = Math.floor(Math.random() * (maxAuto - minAuto + 1));
-    const num = minAuto + randIdx;
-    setHistoryAuto([num]);
-    speakNumberCustom([num]);
+    // Ao iniciar, sorteia imediatamente o primeiro número
+    const randIdx = Math.floor(Math.random() * possibleNumbersAuto.length);
+    const firstNumber = possibleNumbersAuto[randIdx];
+    setHistoryAuto([firstNumber]);
+    speakNumberCustom([firstNumber]);
     setAutoRunning(true);
     setAutoPaused(false);
   }
@@ -120,13 +119,13 @@ export default function Home() {
     setHistoryAuto([]);
   }
 
-  // EFEITO DO SORTEIO AUTOMÁTICO (apenas após o primeiro número já sorteado)
   useEffect(() => {
+    // Sorteio automático: apenas aguarda para sortear do segundo em diante
     if (
       autoRunning &&
       !autoPaused &&
       historyAuto.length > 0 &&
-      historyAuto.length < (maxAuto - minAuto + 1)
+      historyAuto.length < possibleNumbersAuto.length
     ) {
       if (!autoInterval.current) {
         autoInterval.current = setInterval(() => {
@@ -135,7 +134,7 @@ export default function Home() {
               { length: maxAuto - minAuto + 1 },
               (_, i) => minAuto + i
             ).filter((n) => !prevHistory.includes(n));
-            if (remaining.length === 0) {
+            if (remaining.length === 0 || prevHistory.length >= possibleNumbersAuto.length) {
               clearAutoInterval();
               setAutoRunning(false);
               return prevHistory;
@@ -250,10 +249,10 @@ export default function Home() {
               onStart={handleAutoStart}
               onPauseResume={handleAutoPauseResume}
               onStop={handleAutoStop}
-              allSorted={historyAuto.length === (maxAuto - minAuto + 1) && historyAuto.length > 0}
+              allSorted={historyAuto.length === possibleNumbersAuto.length && historyAuto.length > 0}
               sortedCount={historyAuto.length}
               totalNumbers={maxAuto - minAuto + 1 > 0 ? maxAuto - minAuto + 1 : 0}
-              remainingCount={Math.max(0, (maxAuto - minAuto + 1) - historyAuto.length)}
+              remainingCount={Math.max(0, possibleNumbersAuto.length - historyAuto.length)}
             />
             <BackToStart onBack={() => setMode("start")} />
           </>
