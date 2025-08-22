@@ -174,8 +174,8 @@ export default function Home() {
         padding: "2rem",
       }}
     >
-      <Logo />
       <section className="gn-main-section">
+      <Logo />
         <h1 style={{
           marginBottom: 28,
           fontSize: 28,
