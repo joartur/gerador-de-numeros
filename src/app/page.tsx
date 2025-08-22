@@ -22,7 +22,6 @@ export default function Home() {
   const [maxAuto, setMaxAuto] = useState<number>(10);
   const [inputMinAuto, setInputMinAuto] = useState<string>("1");
   const [inputMaxAuto, setInputMaxAuto] = useState<string>("10");
-  const [inputTotalAuto, setInputTotalAuto] = useState<string>("10");
   const [historyAuto, setHistoryAuto] = useState<number[]>([]);
   const [errorAuto, setErrorAuto] = useState<string>("");
   const [autoRunning, setAutoRunning] = useState<boolean>(false);
@@ -91,20 +90,23 @@ export default function Home() {
   }
 
   // --- Lógica do Automático ---
-  // REMOVIDO: const possibleNumbersAuto = ... (não era utilizado)
+  const possibleNumbersAuto = Array.from(
+    { length: maxAuto - minAuto + 1 },
+    (_, i) => minAuto + i
+  ).filter((n) => !historyAuto.includes(n));
 
+  // SORTEIA O PRIMEIRO NÚMERO IMEDIATAMENTE QUANDO INICIAR
   function handleAutoStart() {
     setErrorAuto("");
     if (minAuto > maxAuto) {
       setErrorAuto("O valor mínimo deve ser menor ou igual ao máximo.");
       return;
     }
-    const total = Number(inputTotalAuto);
-    if (isNaN(total) || total < 1 || total > maxAuto - minAuto + 1) {
-      setErrorAuto("Quantidade inválida.");
-      return;
-    }
-    setHistoryAuto([]);
+    // Sorteia o primeiro número imediatamente
+    const randIdx = Math.floor(Math.random() * (maxAuto - minAuto + 1));
+    const num = minAuto + randIdx;
+    setHistoryAuto([num]);
+    speakNumberCustom([num]);
     setAutoRunning(true);
     setAutoPaused(false);
   }
@@ -118,8 +120,14 @@ export default function Home() {
     setHistoryAuto([]);
   }
 
+  // EFEITO DO SORTEIO AUTOMÁTICO (apenas após o primeiro número já sorteado)
   useEffect(() => {
-    if (autoRunning && !autoPaused && historyAuto.length < Number(inputTotalAuto)) {
+    if (
+      autoRunning &&
+      !autoPaused &&
+      historyAuto.length > 0 &&
+      historyAuto.length < (maxAuto - minAuto + 1)
+    ) {
       if (!autoInterval.current) {
         autoInterval.current = setInterval(() => {
           setHistoryAuto((prevHistory) => {
@@ -127,7 +135,7 @@ export default function Home() {
               { length: maxAuto - minAuto + 1 },
               (_, i) => minAuto + i
             ).filter((n) => !prevHistory.includes(n));
-            if (remaining.length === 0 || prevHistory.length >= Number(inputTotalAuto)) {
+            if (remaining.length === 0) {
               clearAutoInterval();
               setAutoRunning(false);
               return prevHistory;
@@ -144,8 +152,7 @@ export default function Home() {
       clearAutoInterval();
     }
     return () => clearAutoInterval();
-    // eslint-disable-next-line
-  }, [autoRunning, autoPaused, minAuto, maxAuto, inputTotalAuto]);
+  }, [autoRunning, autoPaused, minAuto, maxAuto, historyAuto]);
 
   function clearAutoInterval() {
     if (autoInterval.current) {
@@ -243,12 +250,10 @@ export default function Home() {
               onStart={handleAutoStart}
               onPauseResume={handleAutoPauseResume}
               onStop={handleAutoStop}
-              allSorted={historyAuto.length === Number(inputTotalAuto) && historyAuto.length > 0}
+              allSorted={historyAuto.length === (maxAuto - minAuto + 1) && historyAuto.length > 0}
               sortedCount={historyAuto.length}
               totalNumbers={maxAuto - minAuto + 1 > 0 ? maxAuto - minAuto + 1 : 0}
-              remainingCount={Math.max(0, Number(inputTotalAuto) - historyAuto.length)}
-              inputTotal={inputTotalAuto}
-              onChangeTotal={setInputTotalAuto}
+              remainingCount={Math.max(0, (maxAuto - minAuto + 1) - historyAuto.length)}
             />
             <BackToStart onBack={() => setMode("start")} />
           </>
