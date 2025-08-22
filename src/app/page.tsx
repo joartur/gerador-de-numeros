@@ -5,6 +5,7 @@ import StartButtons from "./components/StartButtons";
 import ManualDraw from "./components/ManualDraw";
 import AutoDraw from "./components/AutoDraw";
 import BackToStart from "./components/BackToStart";
+import "./globals.css";
 
 export default function Home() {
   const [mode, setMode] = useState<"start"|"manual"|"auto">("start");
