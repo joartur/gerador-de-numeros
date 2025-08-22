@@ -7,8 +7,8 @@ export default function Logo() {
         src="/logo.png"
         alt="Logo"
         className="gn-logo-img"
-        width={120}
-        height={120}
+        width={150}
+        height={100}
         style={{ objectFit: "contain" }}
         priority
       />
@@ -18,7 +18,7 @@ export default function Logo() {
           justify-content: center;
           align-items: center;
           width: 100%;
-          margin-bottom: 18px;
+          margin-bottom: 3px;
         }
         .gn-logo-img {
           width: 100px;
@@ -31,8 +31,8 @@ export default function Logo() {
             margin-bottom: 24px;
           }
           .gn-logo-img {
-            width: 120px;
-            height: 120px;
+            width: 100px;
+            height: 100px;
           }
         }
       `}</style>
