@@ -1,10 +1,14 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
+<<<<<<< HEAD
 import { ThemeProvider, useTheme } from "./contexts/ThemeContext";
+=======
+>>>>>>> 7c6e76a5274a62d799b2494a48f89bafe1915d93
 import Logo from "./components/Logo";
 import StartButtons from "./components/StartButtons";
 import ManualDraw from "./components/ManualDraw";
 import AutoDraw from "./components/AutoDraw";
+<<<<<<< HEAD
 import BingoGame from "./components/BingoGame";
 import BackToStart from "./components/BackToStart";
 import "./globals.css";
@@ -16,6 +20,15 @@ function HomeContent() {
   const isDark = theme === 'dark';
 
   // Manual states
+=======
+import BackToStart from "./components/BackToStart";
+import "./globals.css";
+
+export default function Home() {
+  const [mode, setMode] = useState<"start"|"manual"|"auto">("start");
+
+  // Manual
+>>>>>>> 7c6e76a5274a62d799b2494a48f89bafe1915d93
   const [minManual, setMinManual] = useState<number>(1);
   const [maxManual, setMaxManual] = useState<number>(10);
   const [inputMinManual, setInputMinManual] = useState<string>("1");
@@ -23,7 +36,11 @@ function HomeContent() {
   const [historyManual, setHistoryManual] = useState<number[]>([]);
   const [errorManual, setErrorManual] = useState<string>("");
 
+<<<<<<< HEAD
   // Auto states
+=======
+  // Automático
+>>>>>>> 7c6e76a5274a62d799b2494a48f89bafe1915d93
   const [minAuto, setMinAuto] = useState<number>(1);
   const [maxAuto, setMaxAuto] = useState<number>(10);
   const [inputMinAuto, setInputMinAuto] = useState<string>("1");
@@ -52,6 +69,10 @@ function HomeContent() {
     }
   }
 
+<<<<<<< HEAD
+=======
+  // --- Lógica do Manual ---
+>>>>>>> 7c6e76a5274a62d799b2494a48f89bafe1915d93
   const possibleNumbersManual = Array.from(
     { length: maxManual - minManual + 1 },
     (_, i) => minManual + i
@@ -94,6 +115,10 @@ function HomeContent() {
     if (e.key === "Enter") (e.target as HTMLInputElement).blur();
   }
 
+<<<<<<< HEAD
+=======
+  // --- Lógica do Automático ---
+>>>>>>> 7c6e76a5274a62d799b2494a48f89bafe1915d93
   const possibleNumbersAuto = Array.from(
     { length: maxAuto - minAuto + 1 },
     (_, i) => minAuto + i
@@ -105,6 +130,10 @@ function HomeContent() {
       setErrorAuto("O valor mínimo deve ser menor ou igual ao máximo.");
       return;
     }
+<<<<<<< HEAD
+=======
+    // Ao iniciar, sorteia imediatamente o primeiro número
+>>>>>>> 7c6e76a5274a62d799b2494a48f89bafe1915d93
     const randIdx = Math.floor(Math.random() * possibleNumbersAuto.length);
     const firstNumber = possibleNumbersAuto[randIdx];
     setHistoryAuto([firstNumber]);
@@ -123,6 +152,10 @@ function HomeContent() {
   }
 
   useEffect(() => {
+<<<<<<< HEAD
+=======
+    // Sorteio automático: apenas aguarda para sortear do segundo em diante
+>>>>>>> 7c6e76a5274a62d799b2494a48f89bafe1915d93
     if (
       autoRunning &&
       !autoPaused &&
@@ -162,6 +195,7 @@ function HomeContent() {
     }
   }
 
+<<<<<<< HEAD
   const backgroundColor = isDark
     ? "linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)"
     : "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)";
@@ -169,11 +203,18 @@ function HomeContent() {
   const cardBg = isDark ? "rgba(255,255,255,0.1)" : "rgba(255,255,255,0.95)";
   const textColor = isDark ? "#fff" : "#244466";
 
+=======
+  // --- Renderização ---
+>>>>>>> 7c6e76a5274a62d799b2494a48f89bafe1915d93
   return (
     <main
       style={{
         minHeight: "100vh",
+<<<<<<< HEAD
         background: backgroundColor,
+=======
+        background: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)",
+>>>>>>> 7c6e76a5274a62d799b2494a48f89bafe1915d93
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
@@ -181,6 +222,7 @@ function HomeContent() {
         padding: "2rem",
       }}
     >
+<<<<<<< HEAD
       {/* Botão de tema */}
       <button
         onClick={toggleTheme}
@@ -225,13 +267,28 @@ function HomeContent() {
             textAlign: "center",
           }}
         >
+=======
+      <section className="gn-main-section">
+      <Logo />
+        <h1 style={{
+          marginBottom: 28,
+          fontSize: 28,
+          fontWeight: 700,
+          letterSpacing: "-0.5px",
+          color: "#244466",
+          textAlign: "center",
+        }}>
+>>>>>>> 7c6e76a5274a62d799b2494a48f89bafe1915d93
           Gerador de Números Aleatórios
         </h1>
         {mode === "start" && (
           <StartButtons
             onManual={() => setMode("manual")}
             onAuto={() => setMode("auto")}
+<<<<<<< HEAD
             onBingo={() => setMode("bingo")}
+=======
+>>>>>>> 7c6e76a5274a62d799b2494a48f89bafe1915d93
           />
         )}
         {mode === "manual" && (
@@ -300,13 +357,17 @@ function HomeContent() {
             <BackToStart onBack={() => setMode("start")} />
           </>
         )}
+<<<<<<< HEAD
         {mode === "bingo" && (
           <BingoGame onBack={() => setMode("start")} />
         )}
+=======
+>>>>>>> 7c6e76a5274a62d799b2494a48f89bafe1915d93
       </section>
     </main>
   );
 }
+<<<<<<< HEAD
 
 export default function Home() {
   return (
@@ -315,3 +376,5 @@ export default function Home() {
     </ThemeProvider>
   );
 }
+=======
+>>>>>>> 7c6e76a5274a62d799b2494a48f89bafe1915d93
