@@ -1,17 +1,19 @@
 import { defineConfig, globalIgnores } from 'eslint/config'
-import nextVitals from 'eslint-config-next/core-web-vitals'
+import nextPlugin from '@next/eslint-plugin-next'
 
 const eslintConfig = defineConfig([
-  ...nextVitals,
   {
+    files: ['**/*.{js,jsx,ts,tsx}'],
+    plugins: {
+      '@next/next': nextPlugin,
+    },
     rules: {
-      // Desabilita regras que estão causando erro no build
+      ...nextPlugin.configs.recommended.rules,
       '@typescript-eslint/no-unused-vars': 'off',
       'react/no-unescaped-entities': 'off',
-      'react-hooks/exhaustive-deps': 'warn', // Muda de erro para aviso
+      'react-hooks/exhaustive-deps': 'warn',
     },
   },
-  // Ignora pastas padrão
   globalIgnores([
     '.next/**',
     'out/**',

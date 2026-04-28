@@ -2,7 +2,7 @@
 import { useState } from "react";
 import BingoConfig from "./BingoConfig";
 import BingoCardsPrint from "./BingoCardsPrint";
-import FullscreenBingo from "./FullscreenBingo";
+import FullscreenBingo from "./BingoFullScreen";
 
 interface BingoGameProps {
   onBack: () => void;
