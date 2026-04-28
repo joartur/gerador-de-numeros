@@ -1,16 +1,13 @@
-// src/app/components/BingoGame.tsx (
 import { useState } from "react";
 import BingoConfig from "./BingoConfig";
 import BingoCardsPrint from "./BingoCardsPrint";
 import BingoFullScreen from "./BingoFullScreen";
-import { useTheme } from "../contexts/ThemeContext";
 
 interface BingoGameProps {
   onBack: () => void;
 }
 
 export default function BingoGame({ onBack }: BingoGameProps) {
-  const { theme } = useTheme();
   const [cards, setCards] = useState<number[][]>([]);
   const [min, setMin] = useState<number>(1);
   const [max, setMax] = useState<number>(75);
@@ -19,10 +16,6 @@ export default function BingoGame({ onBack }: BingoGameProps) {
   const [error, setError] = useState<string>("");
   const [showSorteio, setShowSorteio] = useState<boolean>(false);
 
-  const isDark = theme === 'dark';
-  const textColor = isDark ? "#fff" : "#244466";
-
-  // Gera cartelas baseadas no padrão BINGO
   const generateCards = () => {
     setError("");
     
@@ -126,7 +119,7 @@ export default function BingoGame({ onBack }: BingoGameProps) {
       />
     );
   }
-  
+
   return (
     <div>
       <BingoConfig
@@ -146,13 +139,13 @@ export default function BingoGame({ onBack }: BingoGameProps) {
         <>
           <BingoCardsPrint
             cards={cards}
-            onPrint={handlePrint}
-            onRegenerate={handleRegenerate}
+            onPrint={() => window.print()}
+            onRegenerate={generateCards}
           />
           
           <div style={{ marginTop: "1.5rem", textAlign: "center" }}>
             <button
-              onClick={handleStartSorteio}
+              onClick={() => setShowSorteio(true)}
               style={{
                 padding: "1rem 2rem",
                 background: "linear-gradient(90deg,#f59e0b 0%, #ef4444 100%)",
@@ -162,11 +155,7 @@ export default function BingoGame({ onBack }: BingoGameProps) {
                 fontSize: "1.2rem",
                 fontWeight: "bold",
                 cursor: "pointer",
-                boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
-                transition: "transform 0.2s",
               }}
-              onMouseEnter={(e) => e.currentTarget.style.transform = "scale(1.05)"}
-              onMouseLeave={(e) => e.currentTarget.style.transform = "scale(1)"}
             >
               🎲 INICIAR SORTEIO BINGO
             </button>
@@ -175,22 +164,7 @@ export default function BingoGame({ onBack }: BingoGameProps) {
       )}
       
       <div style={{ marginTop: "1.5rem", textAlign: "center" }}>
-        <button
-          onClick={onBack}
-          style={{
-            padding: "0.7rem 1.5rem",
-            background: "#6b7280",
-            color: "#fff",
-            border: "none",
-            borderRadius: 8,
-            fontSize: 16,
-            fontWeight: 600,
-            cursor: "pointer",
-            boxShadow: "0 2px 8px #0002",
-          }}
-        >
-          Voltar ao Menu Principal
-        </button>
+        <button onClick={onBack}>Voltar ao Menu Principal</button>
       </div>
     </div>
   );
