@@ -1,0 +1,167 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', Arial, Helvetica, sans-serif;
+  background: #eaeff6;
+  color: #244466;
+}
+* {
+  box-sizing: border-box;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px);}
+  to { opacity: 1; transform: translateY(0);}
+}
+@keyframes popIn {
+  0% { transform: scale(0.6); opacity: 0.6;}
+  60% { transform: scale(1.2);}
+  100% { transform: scale(1); opacity: 1;}
+}
+.gn-main-section {
+  max-width: 420px;
+  width: 100%;
+  padding: 2.5rem 2rem 2rem 2rem;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  transition: max-width 0.3s, padding 0.3s;
+}
+.gn-grid {
+  min-height: 56px;
+  max-height: 220px;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+  gap: 10px;
+  margin: 0 auto;
+  width: 100%;
+}
+/* Responsividade para mobile */
+@media (max-width: 768px) {
+  .gn-main-section {
+    width: 95%;
+    padding: 1rem !important;
+  }
+  
+  button {
+    font-size: 0.9rem !important;
+    padding: 0.75rem !important;
+  }
+  
+  h1 {
+    font-size: 1.5rem !important;
+  }
+  
+  /* Ajuste para cartelas no mobile */
+  .printable-card {
+    max-width: 100% !important;
+  }
+  
+  .print-container {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  .gn-main-section {
+    width: 90%;
+  }
+  
+  .print-container {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .gn-main-section {
+    width: 80%;
+    max-width: 1200px;
+  }
+  
+  .print-container {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+/* Estilos para impressão */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  
+  .print-container, 
+  .print-container * {
+    visibility: visible;
+  }
+  
+  .print-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    margin: 0;
+    padding: 20px;
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 20px !important;
+  }
+  
+  .printable-card {
+    break-inside: avoid;
+    page-break-inside: avoid;
+    box-shadow: none;
+    border: 2px solid #000;
+  }
+  
+  button, 
+  .no-print {
+    display: none !important;
+  }
+}
+
+/* Animações */
+@keyframes slideIn {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Scrollbar personalizada */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
