@@ -1,3 +1,5 @@
+# Criar o conteúdo correto diretamente
+cat > src/app/page.tsx << 'EOF'
 "use client";
 import { useState, useRef, useEffect } from "react";
 import { ThemeProvider, useTheme } from "./contexts/ThemeContext";
@@ -314,3 +316,4 @@ export default function Home() {
     </ThemeProvider>
   );
 }
+EOF
