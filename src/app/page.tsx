@@ -15,7 +15,7 @@ function HomeContent() {
 
   const isDark = theme === 'dark';
 
-  // Manual
+  // Manual states
   const [minManual, setMinManual] = useState<number>(1);
   const [maxManual, setMaxManual] = useState<number>(10);
   const [inputMinManual, setInputMinManual] = useState<string>("1");
@@ -23,7 +23,7 @@ function HomeContent() {
   const [historyManual, setHistoryManual] = useState<number[]>([]);
   const [errorManual, setErrorManual] = useState<string>("");
 
-  // Automático
+  // Auto states
   const [minAuto, setMinAuto] = useState<number>(1);
   const [maxAuto, setMaxAuto] = useState<number>(10);
   const [inputMinAuto, setInputMinAuto] = useState<string>("1");
