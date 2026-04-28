@@ -1,6 +1,4 @@
-# Criar o conteúdo correto diretamente
-cat > src/app/page.tsx << 'EOF'
-"use client";
+﻿"use client";
 import { useState, useRef, useEffect } from "react";
 import { ThemeProvider, useTheme } from "./contexts/ThemeContext";
 import Logo from "./components/Logo";
@@ -15,7 +13,7 @@ function HomeContent() {
   const { theme, toggleTheme } = useTheme();
   const [mode, setMode] = useState<"start"|"manual"|"auto"|"bingo">("start");
 
-  const isDark = theme === 'dark';
+  const isDark = theme === '"dark"';
 
   // Manual states
   const [minManual, setMinManual] = useState<number>(1);
@@ -316,4 +314,3 @@ export default function Home() {
     </ThemeProvider>
   );
 }
-EOF
